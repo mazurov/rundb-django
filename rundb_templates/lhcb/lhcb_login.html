@@ -1,0 +1,36 @@
+{%extends "base.html"%}
+{%block title_head%}Login{%endblock%}
+{%block title%}Login{%endblock%}
+{%block top%}
+{%endblock%}
+
+{%block content%}
+<br/>
+<form method="post">
+{% if form.errors %}
+<div class="error last">Your username and password didn't match.
+Please try again.</div>
+{% endif %}  	
+	
+<div class="append-8 prepend-8">
+  <div class="span-7 box ">
+  	<div class="span-7 last">
+  		username:
+  	</div>
+  	<div class="span-7 last">
+  		{{form.username}}
+  	</div>	
+  	<div class="span-7 last">
+  		password:
+  	</div>
+  	<div class="span-7 last">
+  		{{form.password}}
+  	</div>	
+  	<div class="span-7 last">
+  		<button type="submit">Login</button>
+  	</div>	
+  </div>	
+</div>
+<input type="hidden" name="next" value="/" />
+</form>
+{%endblock%}

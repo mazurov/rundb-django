@@ -1,0 +1,5 @@
+<ul>
+{% for log in file.shortlog %} 
+  <li>{{log.time|date:"Y-m-d H:i:s"}} &mdash; {{log.type}} &mdash;  {{log.message}}</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,98 @@
+{%extends "base.html"%}
+{%block head_javascript%}
+<script type="text/javascript" src="{{MEDIA_URL}}rundb/js/rundb.functions.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.b-input-hint').inputHints();
+  
+  $("fieldset.collapsible").collapse();
+  $("fieldset.collapsible-closed").collapse( { closed : true } );
+});
+</script>
+{%endblock%}
+{%block title_head%}Search{%endblock%}
+{%block title%}Search{%endblock%}
+{%block top%}
+<div class="span-21 last">
+<div id="rundb-formControl" >
+<a id="rundb-formControl-show" style="display:none" class="button">Show form...</a>
+<a id="rundb-formControl-hide" class="button">Hide form...</a>
+</div>
+</div>
+{%endblock%}
+
+{%block content%}
+<form id="frmSearch" action="/rundb/maintable" method="post">
+<div class="span-23 box last">
+    <fieldset class="span-22 collapsible-closed">
+      <legend>Search by run number:</legend>
+      <div class="span-22 last">{{form.runid}}</div>
+    </fieldset>
+    <fieldset class="span-22 collapsible">
+      <legend>Common search parameters</legend>
+      <div class="append-2">
+      <div class="span-6">Partiion name:</div>
+      <div class="span-6">Run type:</div>
+      <div class="span-6 last">Destination:</div>
+      <div class="span-6">{{form.partitions}}</div>
+      <div class="span-6">{{form.runtypes}}</div>
+      <div class="span-6 last">{{form.destinations}}</div>
+      </div>
+    </fieldset>
+     <fieldset class="span-22 collapsible-closed">
+      <legend>Search by run number range</legend>
+      <div class="span-10 last">
+          <div class="span-5">Minimum:</div>
+          <div class="span-5 last">Maximum:</div>
+          <div class="span-5">{{form.runid_min}}</div>
+          <div class="span-5 last">{{form.runid_max}}</div>
+        </div>
+      </fieldset>
+      <fieldset class="span-22 collapsible-closed">
+      <legend>Search by time range</legend>
+      <div class="span-21 last">
+        <div class="span-5">Start date:</div>
+        <div class="span-5">Start time:</div>
+        <div class="span-5">End date:</div>
+        <div class="span-5 last">End time:</div>
+        <div class="span-5">
+            <div  class="b-input-hint">
+              <label for="id_startdate">dd.mm.yyyy</label>
+              {{form.startdate}}
+            </div>
+        </div>
+		    <div class="span-5">
+            <div  class="b-input-hint">
+              <label for="id_starttime">hh:mm</label>
+              {{form.starttime}}
+            </div>
+        </div>
+        <div class="span-5">
+            <div  class="b-input-hint">
+              <label for="id_enddate">dd.mm.yyyy</label>
+              {{form.enddate}}
+            </div>
+        </div>
+		    <div class="span-5 last">
+            <div  class="b-input-hint">
+              <label for="id_endtime">hh:mm</label>
+              {{form.endtime}}
+            </div>
+        </div>
+      </div>
+      </fieldset>
+      <fieldset class="span-22">
+      <legend>Ouput parameters:</legend>
+      <div class="span-21 last">Records per page:</div>
+      <div class="span-21 last">{{form.onpage}}</div>
+      </fieldset>
+      <div class="span-23 last"><button type="submit">Search</button></div>
+</div>
+</form>
+<div class="span-24 last">
+<div id="rundb-loading"><img src="/media/i/loading.gif"/></div>
+<div id="rundb-tblMain">
+
+</div>
+</div>
+{%endblock%}

@@ -1,0 +1,54 @@
+{% spaceless %}
+{% if runs %}
+<script language="javascript">
+$(document).ready(function(){
+  $("#runtable").floatHeader();
+});
+</script>
+    <table id="runtable">
+       <thead>
+        <tr>
+          <th>&nbsp</th>
+          <th>RUNID</th>
+          <th>FILES</th>
+          <th>PARTITIONNAME / SUBDETECTORS</th>
+          <th>RUNTYPE</th>
+          <th>ACTIVITY</th>
+          <th>TCK</th>
+          <th>EVENTS</th>
+          <th>PHYSSTAT</th>
+          <th>STATE</th>
+          <th>DESTINATION</th>
+          <th>START/END</th>
+        </tr>
+       </thead>
+       {% for run in runs %}
+       <tr id="run-{{run.runid}}" class="{% cycle 'odd' 'even' %}">
+        <td>
+         <a href="/rundb/run?runid={{run.runid}}"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
+         {% if run.has_files %}
+         <a href="#" title="Show files" onclick="return rundb_showfiles({{run.runid}})" style="text-decoration:none"><span class="ss_sprite ss_application_view_list">&nbsp;</span></a>
+         {%endif%}
+        </td>
+        <td>{{run.runid}}</td>
+        <td>{{ run.rundbfiles_set.count }}</td>
+        <td>{{ run.partitionname }}<br/>
+           {% for partition in run.subpartitions %}
+            {{ partition }}
+           {% endfor %}
+        </td>
+        <td>{{run.runtype}}</td>
+        <td>{{run.activity}}</td>
+        <td>{{run.tck}}</td>
+        <td>{{run.events}}</td>
+        <td>{{run.physstat}}</td>
+        <td>{{run.state}}</td>
+        <td>{{run.destination}}</td>
+        <td>{{run.starttime|date:"Y-m-d H:i:s" }}<br/> {{run.endtime|date:"Y-m-d H:i:s" }}</td>
+        </tr>
+       {% endfor %}
+    </table>
+{% else %}
+    <p>No runs are available.</p>
+{% endif %}
+{% endspaceless %}
