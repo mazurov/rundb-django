@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     (r'^logout$','django.contrib.auth.views.logout',{'redirect_field_name':'next_page'}),    
     
     (r'^$',"rundb_django.rundb.views.index"),
-    (r'^rundb$',"rundb_django.rundb.views.redirect"),
+    (r'^rundb/$',"rundb_django.rundb.views.redirect"),
     
     (r'^rundb/run$',"rundb_django.rundb.views.run"),
     (r'^rundb/maintable$',"rundb_django.rundb.views.maintable"),
