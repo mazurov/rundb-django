@@ -5,6 +5,7 @@ ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 configs = {
     '/home/mazurov/Projects/rundb/rundb_django': 'local',
+    '/opt/lampp/vhosts/rundb/rundb_django': 'production',
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -84,7 +85,7 @@ AUTHENTICATION_BACKENDS = (
  'django.contrib.auth.backends.ModelBackend',
 )
 # Import the configuration settings file - REPLACE projectname with your project
-config_module = __import__('config.%s' % configs[ROOT_PATH], globals(), locals(), 'rundb_django')
+config_module = __import__('config.%s' % configs[ROOT_PATH], globals(), locals(), ['rundb_django'])
 
 # Load the config settings properties into the local scope.
 for setting in dir(config_module):

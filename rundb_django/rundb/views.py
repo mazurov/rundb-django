@@ -100,7 +100,7 @@ def files(request):
   #--------------------------------------------------------------------------------------
   # Context
   #--------------------------------------------------------------------------------------
-  context = {'run':run,'files': run.rundbfiles_set.all()[(page-1)*onpage:page]}
+  context = {'run':run,'files': run.rundbfiles_set.all()[(page-1)*onpage:page*onpage]}
   if run.rundbfiles_set.count() > page*onpage:
     context['next'] = page+1
   #--------------------------------------------------------------------------------------
