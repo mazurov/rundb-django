@@ -19,7 +19,10 @@ urlpatterns = patterns('',
     (r'^login$','django.contrib.auth.views.login', 
                                   {'template_name': 'lhcb/lhcb_login.html','redirect_field_name':'next_page'}),
     (r'^logout$','django.contrib.auth.views.logout',{'redirect_field_name':'next_page'}),    
+    
     (r'^$',"rundb_django.rundb.views.index"),
+    (r'^rundb$',"rundb_django.rundb.views.redirect"),
+    
     (r'^rundb/run$',"rundb_django.rundb.views.run"),
     (r'^rundb/maintable$',"rundb_django.rundb.views.maintable"),
     (r'^rundb/file$',"rundb_django.rundb.views.file"),

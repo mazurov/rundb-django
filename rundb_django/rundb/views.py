@@ -1,6 +1,6 @@
 import datetime
 from django.template import RequestContext,loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import simplejson
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
@@ -28,6 +28,9 @@ def search_form(request=None):
 def index(request):
     return render_to_response('rundb/rundb_index.html',
       {'form':search_form()},context_instance=RequestContext(request))
+
+def redirect(request):
+  return HttpResponseRedirect("/")
 
 """
 Result for ajax form
