@@ -105,13 +105,16 @@ class Rundbruns(models.Model):
     def events(self):
       result = 0
       for file in self.rundbfiles_set.all():
-        result += file.events
+        if not file.events is None:
+          result += file.events
       return result
     
     def physstat(self):
       result = 0
       for file in self.rundbfiles_set.all():
-        result += int(file.physstat())
+        physstat = file.physstat();
+        if not (physstat is None):
+          result += int(physstat)
       return result
 
 
