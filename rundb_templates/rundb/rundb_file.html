@@ -1,0 +1,38 @@
+{%extends "base.html"%}
+{%block title_head%}File {{file.name}}{%endblock%}
+{%block title%}File {{file.name}}{%endblock%}
+{%block head_javascript%}
+<script type="text/javascript" src="{{MEDIA_URL}}rundb/js/rundb.functions.js"></script>
+{%endblock%}
+{%block content%}
+<br/>
+{% include "rundb/rundb_files_table.inc.html" %}
+
+<table>
+<thead>
+<tr>
+  <th>Reference count</th>
+  <th>Reference owner</th>
+  <th>Reference date</th>
+</tr>
+</thead>
+<tr>
+  <td>{{file.refcount}}</td>
+  <td>{{file.refowner}}</td>
+  <td>{{file.refdate}}</td>
+</tr>
+</table>
+<table>
+<thead>
+<tr>
+  <th>Log</th>
+</tr>
+<tr><td>
+<ul>
+{% for log in file.log %} 
+  <li>{{log.time|date:"Y-m-d H:i:s"}} &mdash; {{log.type}} &mdash;  {{log.message}}</li>
+{% endfor %}
+</ul>
+</td></tr>
+</table>
+{%endblock%}

@@ -82,9 +82,30 @@ def maintable(request):
 
 
 def files(request):
-  tpl = loader.get_template('rundb/rundb_files.html')
+  #--------------------------------------------------------------------------------------
+  if 'p' in request.GET:
+    page = int(request.GET['p'])
+  else:
+    page = 1
+  #--------------------------------------------------------------------------------------
+  onpage=10
+  #--------------------------------------------------------------------------------------
+  if page==1:
+    tplfile = 'rundb/rundb_files.html'
+  else:
+    tplfile = 'rundb/rundb_files_rows.inc.html'
+  #--------------------------------------------------------------------------------------
+  tpl = loader.get_template(tplfile)
   run = Rundbruns.objects.get(runid=request.GET['runid']);
-  ctx = RequestContext(request,{'run':run})
+  #--------------------------------------------------------------------------------------
+  # Context
+  #--------------------------------------------------------------------------------------
+  context = {'run':run,'files': run.rundbfiles_set.all()[(page-1)*onpage:page]}
+  if run.rundbfiles_set.count() > page*onpage:
+    context['next'] = page+1
+  #--------------------------------------------------------------------------------------
+  ctx = RequestContext(request,context)
+  #--------------------------------------------------------------------------------------
   return HttpResponse(simplejson.dumps(tpl.render(ctx)),
                                                 mimetype='application/json');
 
@@ -103,5 +124,15 @@ def file_log(request):
 
 def run(request):
   run = Rundbruns.objects.get(runid=request.GET['runid'])
+  odins = []
+  for i in range(7):
+    odins.append(getattr(run,'odin_trg_'+str(i)))
+
   return render_to_response('rundb/rundb_run.html',
-      {'run':run,'runs':[run]},context_instance=RequestContext(request))
+      {'single':True, 'run':run,'runs':[run],'iodins':range(7),'odins':odins},context_instance=RequestContext(request))
+
+def file(request):
+  file = Rundbfiles.objects.get(fileid=request.GET['fileid'])
+  run = file.run
+  return render_to_response('rundb/rundb_file.html',
+      {'single':True, 'file':file,'files':[file],'run':run},context_instance=RequestContext(request))

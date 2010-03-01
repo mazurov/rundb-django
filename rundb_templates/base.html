@@ -2,6 +2,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>RUNDB - {% block title_head %}{% endblock %}</title>
 {% include "head.html" %}
 {% block head_javascript %}{% endblock %}
 </head>
@@ -9,7 +10,7 @@
 <div class="container">
 <div class="span-21 prepend-3 last">
    <a href="/"><img src="{{MEDIA_URL}}i/logo.png" class="pull-3"/></a>
-   <div class="span-10"><a href="/">Home</a></div>
+   <div class="span-10"><a href="/">Search</a></div>
    <div class="span-11 last" style="text-align:right">
    	{% if user.is_authenticated %}
 		Welcome, <strong>{{user.username}}</strong> |

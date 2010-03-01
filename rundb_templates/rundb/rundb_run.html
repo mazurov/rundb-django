@@ -7,4 +7,19 @@
 {%block content%}
 <br/>
 {% include "rundb/rundb_maintable.html" %}
+
+<table>
+<thead>
+<tr>
+  {% for index in iodins %}
+  <th>odin_trg_{{index}}</th>
+  {%endfor%}
+</tr>
+</thead>
+<tr>
+  {% for odin in odins %}
+  <td>{{odin}}</td>
+  {%endfor%}
+</tr>
+</table>
 {%endblock%}

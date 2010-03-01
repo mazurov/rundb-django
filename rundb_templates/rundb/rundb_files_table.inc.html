@@ -1,0 +1,21 @@
+    <table>
+      <caption>File(s) for <a href="/rundb/run?runid={{run.runid}}">{{run.runid}}</a></caption>
+      <thead>
+      <tr>
+      	<th>
+           {% if user.is_authenticated %}
+          <a href="#" title="pin all" onclick="return rundb_files_pin({{run.runid}})" style="text-decoration:none"><span class="ss_sprite ss_tag_blue_add">&nbsp;</span></a>
+          <a href="#" title="unpin all" onclick="return rundb_files_unpin({{run.runid}})" style="text-decoration:none"><span class="ss_sprite ss_tag_blue_delete">&nbsp;</span></a>
+          {%endif%}
+        </th>
+        <th>NAME</th>
+        <th>STREAM</th>
+        <th>STATE</th>
+        <th>EVENTS</th>
+        <th>PHYSSTAT</th>
+        <th>BYTES</th>
+        <th>TIME</th>
+      </tr>
+    </thead>
+    {% include "rundb/rundb_files_rows.inc.html" %}
+   </table>

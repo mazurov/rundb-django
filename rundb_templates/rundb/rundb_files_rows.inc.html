@@ -1,0 +1,40 @@
+    {% for file in files %}
+      <tr class="rundb-file-row-{{run.runid}}">
+      	  <td width="70px">
+            <script language="javascript">
+              $(document).ready(function(){$(".rundb-file-log").fancybox();});
+            </script>
+            <nowrap>
+            {% if not single %}
+            <a href="/rundb/file?fileid={{file.fileid}}"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
+            {% endif %}
+            {% if user.is_authenticated %}
+      	  	<a href="#" title="{%if file.refcount%}unpin{%else%}pin{%endif%}" style="text-decoration:none" onclick="return rundb_file_pin({{file.fileid}})" id="rundb-file-pin-{{file.fileid}}">
+            <span class="ss_sprite  {%if file.refcount%}ss_tag_blue_delete{%else%}ss_tag_blue_add{%endif%}">&nbsp;</span>
+            </a>
+            {%endif%}
+            <a href="/rundb/file-log?fileid={{file.fileid}}" title="Log for file {{file.name}}" id="rundb-file-log-{{file.fileid}}" style="text-decoration:none;display:{% if file.log.count %}inline{%else%}none{%endif%}" class="rundb-file-log" >
+            <span class="ss_sprite ss_book" style="display:inline">&nbsp;</span>
+            </a></nowrap>
+		 </td>
+          <td><!-- {{file.fileid}}-->{{file.name}}</td>
+          <td>{{file.stream}}</td>
+          <td>{{file.state}}</td>
+          <td>{{file.events}}</td>
+          <td>{{file.physstat}}</td>
+          <td>{{file.bytes}}</td>
+          <td>{{ file.creationtime|date:"Y-m-d H:i:s" }}</td>
+      </tr>
+      {%if file.castor %}
+      <tr>
+        <td>&nbsp;</td>
+        <td colspan="3" class="small">{{file.castor}}</td>
+        <td colspan="4" class="small"> 1:{{file.nevent_1}} | 2:{{file.nevent_2}} | 3:{{file.nevent_3}} | 4:{{file.nevent_4}} | 5:{{file.nevent_5}} | 6:{{file.nevent_6}} | 7:{{file.nevent_7}}
+      </tr>
+      {% endif %}
+    {% endfor %}
+    {%if next %}
+    <tr class="rundb-files-next-{{run.runid}}">
+      <td colspan="7"><a href="#" onclick="return rundb_showfiles({{run.runid}},{{next}})">Next</a></td>
+    </tr>
+    {%endif%}

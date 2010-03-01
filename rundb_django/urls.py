@@ -22,9 +22,9 @@ urlpatterns = patterns('',
     (r'^$',"rundb_django.rundb.views.index"),
     (r'^rundb/run$',"rundb_django.rundb.views.run"),
     (r'^rundb/maintable$',"rundb_django.rundb.views.maintable"),
+    (r'^rundb/file$',"rundb_django.rundb.views.file"),
     (r'^rundb/files$',"rundb_django.rundb.views.files"),
     (r'^rundb/file-pin$',"rundb_django.rundb.views.file_pin"),
     (r'^rundb/file-log$',"rundb_django.rundb.views.file_log"),
     
-    (r'^admin/jsi18n/', 'django.views.i18n.javascript_catalog'),
 )

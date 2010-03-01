@@ -146,7 +146,7 @@ class Rundbfiles(models.Model):
     refcount = models.IntegerField(null=True, blank=True)
     timestamp = models.DateField(null=True, blank=True)
     refowner = models.CharField(max_length=32, blank=True)
-    refdate = models.DateField(null=True, blank=True)
+    refdate = models.DateField(null=True, blank=True, auto_now=True)
     nevent_0 = models.IntegerField(null=True, blank=True)
     nevent_1 = models.IntegerField(null=True, blank=True)
     nevent_2 = models.IntegerField(null=True, blank=True)

@@ -47,15 +47,20 @@ function rundb_frmSearch_onSuccess(response){
   $('#rundb-formControl').click();
 }
 
-function rundb_showfiles(runid)
+function rundb_showfiles(runid,page)
 {
   var run_files_row = $('#run-files-row-'+runid);
-  if (!run_files_row.length){
+  if (!((run_files_row.length>0) && (page==1))){
 	  $.ajax({
-		    url: '/rundb/files?runid='+runid,
+		    url: '/rundb/files?runid='+runid+'&p='+page,
 		    cache: false,
-		    success: function(data) {$('#run-'+runid).after(data);}
-		    });
+		    success: function(data) {
+            if (page==1){
+                $('#run-'+runid).after(data);
+             }else{
+                $('.rundb-files-next-'+runid).replaceWith(data);
+             }
+		    }});
   }else{
     run_files_row.toggle();
   }
