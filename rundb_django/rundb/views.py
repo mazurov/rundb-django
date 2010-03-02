@@ -57,7 +57,7 @@ def maintable(request):
       if form.cleaned_data['startdate']:
         starttime = datetime.datetime.combine(form.cleaned_data['startdate'],datetime.time.min)
         if form.cleaned_data['starttime']:
-          starttime = datetime.datetime.combine(starttime,form.cleaned_data['startime'])
+          starttime = datetime.datetime.combine(starttime,form.cleaned_data['starttime'])
         runs = runs.filter(starttime__gte=starttime)
       else:
         if form.cleaned_data['starttime']:
