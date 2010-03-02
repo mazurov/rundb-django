@@ -190,6 +190,12 @@ class Rundbfiles(models.Model):
       if self.run.destination == 'OFFLINE' and self.directory():
         return self.directory().replace('/daqarea','/castor/cern.ch/grid')+"/"+self.name
       return None
+
+    def has_nevents(self):
+      for i in range(7):
+          if not (getattr(self,'nevent_'+i) is None):
+            return False
+      return True
     
     def pin(self,user):
       if self.refcount==0:
