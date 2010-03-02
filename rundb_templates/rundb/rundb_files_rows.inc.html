@@ -25,13 +25,12 @@
           <td>{{file.bytes}}</td>
           <td>{{ file.creationtime|date:"Y-m-d H:i:s" }}</td>
       </tr>
-      {%if file.castor %}
       <tr>
         <td>&nbsp;</td>
-        <td colspan="3" class="small">{{file.castor}}</td>
-        <td colspan="4" class="small"> 0:{{file.nevent_1}} | 1:{{file.nevent_2}} | 2:{{file.nevent_3}} | 3:{{file.nevent_4}} | 4:{{file.nevent_5}} | 5:{{file.nevent_6}} | 6:{{file.nevent_7}}
+        <td colspan="3" class="small">{{file.castor|default_if_none:"Does not exists at the CASTOR"}}</td>
+        <td colspan="4" class="small"><b>nevent</b> 0:{{file.nevent_1}} | 1:{{file.nevent_2}} | 2:{{file.nevent_3}} | 3:{{file.nevent_4}} | 4:{{file.nevent_5}} | 5:{{file.nevent_6}} | 6:{{file.nevent_7}}
+
       </tr>
-      {% endif %}
     {% endfor %}
     {%if next %}
     <tr class="rundb-files-next-{{run.runid}}">
