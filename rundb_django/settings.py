@@ -56,7 +56,7 @@ TEMPLATE_DIRS = (
     # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-   '/home/mazurov/Projects/rundb/rundb_templates',
+   ROOT_PATH+'/../rundb_templates',
 #   '/usr/lib/pymodules/python2.6/debug_toolbar/template',
 )
 

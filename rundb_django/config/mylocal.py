@@ -1,3 +1,6 @@
+import os
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))+"/../.."
+
 ADMINS = (
     ('Vasya Pupkin', 'vasya@pupkin.com'),
 )
@@ -26,13 +29,13 @@ TEMPLATE_DIRS = (
     # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-   '/home/vasya/Projects/site/templates',
+   ROOT_PATH+'/project_templates',
 #   '/usr/lib/pymodules/python2.6/debug_toolbar/template',
 )
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/home/vasya/Projects/site/media'
+MEDIA_ROOT = ROOT_PATH+'/project_media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -42,7 +45,7 @@ MEDIA_URL = '/media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/admin-media/'
+ADMIN_MEDIA_PREFIX = '/amedia/'
 
 
 AUTHENTICATION_BACKENDS = (
