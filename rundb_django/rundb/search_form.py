@@ -25,6 +25,9 @@ class SearchForm(forms.Form):
     self.fields['partitions'].widget.attrs['class'] = 'span-5'
     self.fields['runtypes'].widget.attrs['class'] = 'span-5'
     self.fields['destinations'].widget.attrs['class'] = 'span-5'
+    self.fields['partitions'].widget.attrs['style'] = 'height:340px'
+    self.fields['runtypes'].widget.attrs['style'] = 'height:340px'
+    self.fields['destinations'].widget.attrs['style'] = 'height:340px'
     
     self.fields['startdate'].widget.attrs['title'] = 'yyyy-mm-dd'
     self.fields['starttime'].widget.attrs['title'] = 'hh:mm'

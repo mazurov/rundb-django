@@ -9,12 +9,12 @@
 <body>
 <div class="container">
 <div class="span-21 prepend-3 last">
-   <a href="/"><img src="{{MEDIA_URL}}i/logo.png" class="pull-3"/></a>
+   <div class="span-3 pull-3"><a href="/"><img src="{{MEDIA_URL}}i/logo.png" class="left"/></a></div>
    <div class="span-10">
        <a href="/">Search</a> |
        <a href="http://github.com/mazurov/rundb-django" target="_blank">Project tracker</a>
    </div>
-   <div class="span-11 last" style="text-align:right">
+   <div class="span-11 append-bottom last" style="text-align:right">
    	{% if user.is_authenticated %}
 		Welcome, <strong>{{user.username}}</strong> |
 		<a href="/logout?next_page={{request.get_full_path|urlencode}}">Logout</a>
@@ -22,7 +22,7 @@
 		<a href="/login?next_page={{request.get_full_path|urlencode}}">Login</a>
 	{% endif %}  <span class="notice">BETA 2.0</span>
  </div>
- <div class="span-21"><h1>RUNDB: {%block title%}{%endblock%}</h1>{% block top %}{% endblock %}&nbsp;</div>
+ <div class="span-21 last"><h1>RUNDB: {%block title%}{%endblock%}</h1>{% block top %}{% endblock %}&nbsp;</div>
 </div>
 <div class="span-24 last">
 {% spaceless %}
