@@ -24,7 +24,7 @@ def search_form(request=None):
   
   activities = []
   for activity in Rundbruns.all_activities():
-    destinations.append((activity,activity))
+    activities.append((activity,activity))
   
   return SearchForm(request.user,partitions,runtypes,destinations,activities,request.REQUEST) 
   
