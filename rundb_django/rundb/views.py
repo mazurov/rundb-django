@@ -60,14 +60,12 @@ def maintable(request):
         runs = runs.filter(destination__in=form.cleaned_data['destinations'])
       if form.cleaned_data['activities']:
         runs = runs.filter(activity__in=form.cleaned_data['activities'])
-      if form.cleaned_data['pinned'] == "1":
-        runs = runs.filter(rundbfiles__refcount__gt=0)
       
       if form.cleaned_data['pinned'] == 1:
         runs = runs.filter(rundbfiles__refcount__gt=0)
       
-      #if form.cleaned_data['pinned'] == 1:
-      #  runs = runs.filter(rundbfiles__refcount__gt=0).filter(rundbfiles__refowner
+      if (request.user.is_authenticated()) and (form.cleaned_data['pinned'] == 2):
+        runs = runs.filter(rundbfiles__refowner=request.user.username)
 
       
       if form.cleaned_data['startdate']:
