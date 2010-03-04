@@ -1,11 +1,12 @@
 import datetime
 from django.template import RequestContext,loader
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.utils import simplejson
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from rundb_django.rundb.models import Rundbruns,Rundbfiles
-from rundb_django.rundb.search_form import SearchForm
+from rundb_django.rundb.search_form import SearchForm, ApiForm
 
 
 
@@ -153,3 +154,115 @@ def file(request):
   run = file.run
   return render_to_response('rundb/rundb_file.html',
       {'single':True, 'file':file,'files':[file],'run':run},context_instance=RequestContext(request))
+
+
+def _api_response(request, result):
+  """
+  Creates the response object for the api_* views serializing the result as a
+  JSON object.
+
+  If the argument 'callback' is included in the request, the response uses the
+  JSONP pattern and the argument value is used as the callback function.
+  """
+  callback = request.GET.get("callback")
+
+  res = HttpResponse(mimetype='application/json')
+
+  if callback:
+    res.write("%s(" % callback)
+    #res.write(json)
+    simplejson.dump(result, res)
+    res.write(")")
+  else:
+    #res.write(json)
+    simplejson.dump(result, res)
+
+  return res
+
+def _api_run_as_json(run):
+  """
+  Creates a dictionary from a Run object so that it can be serialized with JSON
+  """
+  result = {}
+
+  attrs = ('runid', 'partitionid', 'runtype', 'partitionname', 'destination')
+  for a in attrs:
+    result[a] = getattr(run, a)
+
+  attrs = ('starttime', 'endtime')
+  for a in attrs:
+    result[a] = getattr(run, a).strftime("%Y-%m-%dT%H:%M:%S%z")
+
+  result['state'] = run.state()
+  return result
+
+
+def api_run(request, runid):
+  """
+  Returns the information of a Run in JSON format.
+
+  Query arguments are (optional):
+
+   - callback: The response will use the JSONP format. The argument is used as
+        the name of the callback function.
+
+  """
+  run = get_object_or_404(Rundbruns, pk=runid)
+  result = _api_run_as_json(run)
+
+  return _api_response(request, result)
+
+def api_search(request):
+  """
+  Search the run database and returns the results ordered by run number
+  using JSON format.
+
+  Query arguments are (optional):
+
+   - starttime: In format 2009-11-02T112:57:00
+   - endtime: In format 2009-11-02T112:57:00
+   - destination
+   - partition
+   - start: First result (0 based)
+   - rows: Maximum number of results
+   - callback: The response will use the JSONP format. The argument is used as
+        the name of the callback function.
+
+  """
+  form = ApiForm(request.GET)
+  if not form.is_valid():
+    rtn = dict(
+        errors=list(form.errors)
+    )
+    json = simplejson.dumps(rtn)
+    return HttpResponseBadRequest(json, mimetype='text/plain')
+
+  start = int(form.cleaned_data['start'] or 0)
+  rows = int(form.cleaned_data['rows'] or 20)
+
+  runs = Rundbruns.objects
+
+  if form.cleaned_data['partition']:
+     runs = runs.filter(partitionname__exact=form.cleaned_data['partition'])
+
+  if form.cleaned_data['destination']:
+     runs = runs.filter(destination__in=(form.cleaned_data['destination'], ))
+
+  if form.cleaned_data['starttime']:
+    runs = runs.filter(starttime__gte=form.cleaned_data['starttime'])
+
+  if form.cleaned_data['endtime']:
+    runs = runs.filter(endtime__lte=form.cleaned_data['endtime'])
+
+  print start, rows
+
+  count = runs.all().aggregate(Count('runid'))
+  runs = runs.all().order_by('-runid')[start:rows]
+
+  rtn = {
+    'totalResults': count['runid__count'],
+    'start': start,
+    'runs': map(_api_run_as_json, runs)
+  }
+  return _api_response(request, rtn)
+

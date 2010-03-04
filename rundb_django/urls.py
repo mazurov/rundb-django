@@ -29,5 +29,8 @@ urlpatterns = patterns('',
     (r'^rundb/files$',"rundb_django.rundb.views.files"),
     (r'^rundb/file-pin$',"rundb_django.rundb.views.file_pin"),
     (r'^rundb/file-log$',"rundb_django.rundb.views.file_log"),
-    
+
+    (r'^api/run/(?P<runid>\d+)/$', 'rundb_django.rundb.views.api_run'),
+    (r'^api/search/$', 'rundb_django.rundb.views.api_search'),
+
 )

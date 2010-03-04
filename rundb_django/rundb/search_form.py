@@ -50,4 +50,18 @@ class SearchForm(forms.Form):
     self.fields['starttime'].widget.attrs['title'] = 'hh:mm'
     self.fields['enddate'].widget.attrs['title'] = 'dd.mm.yyyy'
     self.fields['endtime'].widget.attrs['title'] = 'hh:mm'
+
+
+
+class ApiForm(forms.Form):
+  """
+  The form used for the query arguments of the api_search view.
+  """
+  rows = forms.IntegerField(min_value=1, required=False)
+  start = forms.IntegerField(min_value=0, required=False)
+
+  partition = forms.CharField(required=False)
+  destination = forms.CharField(required=False)
+  starttime = forms.DateTimeField(('%Y-%m-%dT%H:%M:%S',),required=False)
+  endtime = forms.DateTimeField(('%Y-%m-%dT%H:%M:%S',),required=False)
     
