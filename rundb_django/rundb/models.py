@@ -57,6 +57,8 @@ class Rundbruns(models.Model):
     _all_partitions = []
     _all_runtypes = []
     _all_destinations = []
+    _all_activities = []
+
     _states =['','ACTIVE','ENDED','MIGRATING','NOT NEEDED','CREATED',
                                                                     'IN BKK'];
 
@@ -66,6 +68,14 @@ class Rundbruns(models.Model):
            Rundbruns._all_subpartitions = list(
                     Rundbdictnum.objects.filter(type='DET').order_by('value'))
         return Rundbruns._all_subpartitions
+    
+    @classmethod
+    def all_activities(cls):
+      if 0 == len(Rundbruns._all_activities):
+        for item in Rundbruns.objects.values("activity").distinct().\
+                                                    order_by("activity"):
+          Rundbruns._all_activities.append(item['activity'])
+      return Rundbruns._all_activities
     
     @classmethod
     def all_partitions(cls):

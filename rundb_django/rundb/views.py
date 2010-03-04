@@ -22,12 +22,16 @@ def search_form(request=None):
   for destination in Rundbruns.all_destinations():
     destinations.append((destination,destination))
   
-  return SearchForm(partitions,runtypes,destinations,request) 
+  activities = []
+  for activity in Rundbruns.all_activities():
+    destinations.append((activity,activity))
+  
+  return SearchForm(request.user,partitions,runtypes,destinations,activities,request.REQUEST) 
   
 
 def index(request):
     return render_to_response('rundb/rundb_index.html',
-      {'form':search_form()},context_instance=RequestContext(request))
+      {'form':search_form(request)},context_instance=RequestContext(request))
 
 def redirect(request):
   return HttpResponseRedirect("/")
@@ -36,10 +40,11 @@ def redirect(request):
 Result for ajax form
 """
 def maintable(request):
-  form = search_form(request.REQUEST)
+  form = search_form(request)
 
   if form.is_valid():
     runs = Rundbruns.objects   
+
     if form.cleaned_data['runid']:
       runs = runs.filter(runid=form.cleaned_data['runid'])
     else:
@@ -53,6 +58,17 @@ def maintable(request):
         runs = runs.filter(runtype__in=form.cleaned_data['runtypes'])
       if form.cleaned_data['destinations']:
         runs = runs.filter(destination__in=form.cleaned_data['destinations'])
+      if form.cleaned_data['activities']:
+        runs = runs.filter(activity__in=form.cleaned_data['activities'])
+      if form.cleaned_data['pinned'] == "1":
+        runs = runs.filter(rundbfiles__refcount__gt=0)
+      
+      if form.cleaned_data['pinned'] == 1:
+        runs = runs.filter(rundbfiles__refcount__gt=0)
+      
+      #if form.cleaned_data['pinned'] == 1:
+      #  runs = runs.filter(rundbfiles__refcount__gt=0).filter(rundbfiles__refowner
+
       
       if form.cleaned_data['startdate']:
         starttime = datetime.datetime.combine(form.cleaned_data['startdate'],datetime.time.min)

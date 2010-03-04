@@ -7,12 +7,14 @@
     <fieldset class="span-22 collapsible">
       <legend>Common search parameters</legend>
       <div class="append-2">
-      <div class="span-6">Partiion name:</div>
-      <div class="span-6">Run type:</div>
-      <div class="span-6 last">Destination:</div>
-      <div class="span-6">{{form.partitions}}</div>
-      <div class="span-6">{{form.runtypes}}</div>
-      <div class="span-6 last">{{form.destinations}}</div>
+      <div class="span-5">Partiion name:</div>
+      <div class="span-5">Run type:</div>
+      <div class="span-5">Destination:</div>
+      <div class="span-5 last">Activity:</div>
+      <div class="span-5">{{form.partitions}}</div>
+      <div class="span-5">{{form.runtypes}}</div>
+      <div class="span-5">{{form.destinations}}</div>
+      <div class="span-5 last">{{form.activities}}</div>
       </div>
     </fieldset>
      <fieldset class="span-22 collapsible-closed">
@@ -56,6 +58,10 @@
             </div>
         </div>
       </div>
+      </fieldset>
+      <fieldset class="span-22 collapsible-closed b-ul-inline">
+      <legend>Pinned files:</legend>
+       {{form.pinned}}
       </fieldset>
       <fieldset class="span-22">
       <legend>Ouput parameters:</legend>
