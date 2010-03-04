@@ -15,7 +15,7 @@ class SearchForm(forms.Form):
   enddate       = forms.DateTimeField(('%d.%m.%Y',),widget=forms.DateTimeInput(format='%d.%m.%Y'),required=False)
   starttime     = forms.TimeField(required=False)
   endtime       = forms.TimeField(required=False)
-  pinned        = forms.TypedChoiceField(widget=RadioSelect,required=False,initial=0)
+  pinned        = forms.TypedChoiceField(widget=RadioSelect,required=False,coerce=int, initial=0)
   pinned_all    = forms.BooleanField(label='Run contains any pinned files',required=False)
   pinned_user   = forms.BooleanField(label='Run contains files pinned by user',required=False)
   onpage        = forms.ChoiceField(choices=[(10,10),(50,50),(100,100),
@@ -29,7 +29,7 @@ class SearchForm(forms.Form):
     self.fields['activities'].choices = activities
 
     pinned = []
-    pinned.append((0,'No matter'))
+    pinned.append((0,'Do not check'))
     pinned.append((1,'Run contains some pinned files'))
     if user.is_authenticated():
        pinned.append((2,"Run contains some pinned files by user %s" % user.username))

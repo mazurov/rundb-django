@@ -210,9 +210,10 @@ class Rundbfiles(models.Model):
     def pin(self,user):
       if self.refcount==0:
         self.refcount=1
+        self.refowner = user.username
       else:
         self.refcount=0
-      self.refowner = user.username
+        self.refowner = ''
       log = Rundbdatamover()
       log.pin(self.name,user.username,self.refcount)
       log.save()

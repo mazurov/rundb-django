@@ -64,7 +64,7 @@ def maintable(request):
       if form.cleaned_data['pinned'] == 1:
         runs = runs.filter(rundbfiles__refcount__gt=0)
       
-      if (request.user.is_authenticated()) and (form.cleaned_data['pinned'] == 2):
+      if (request.user.is_authenticated()) and (form.cleaned_data['pinned'] == "2"):
         runs = runs.filter(rundbfiles__refowner=request.user.username)
 
       
