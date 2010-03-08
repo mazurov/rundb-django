@@ -30,9 +30,9 @@ class SearchForm(forms.Form):
 
     pinned = []
     pinned.append((0,'Do not check'))
-    pinned.append((1,'Run contains some pinned files'))
+    pinned.append((1,'Run contains pinned files'))
     if user.is_authenticated():
-       pinned.append((2,"Run contains some pinned files by user %s" % user.username))
+       pinned.append((2,"Run contains  files pinned by user %s" % user.username))
     
     self.fields['pinned'].choices = pinned
 
