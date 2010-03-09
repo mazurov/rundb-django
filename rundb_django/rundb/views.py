@@ -99,14 +99,10 @@ def maintable(request):
   return HttpResponse(json, mimetype='application/json')
 
 
-def files(request):
-  #--------------------------------------------------------------------------------------
-  if 'p' in request.GET:
-    page = int(request.GET['p'])
-  else:
-    page = 1
+def files(request,runid,page=1):
   #--------------------------------------------------------------------------------------
   onpage=10
+  page=int(page)
   #--------------------------------------------------------------------------------------
   if page==1:
     tplfile = 'rundb/rundb_files.html'
@@ -114,7 +110,7 @@ def files(request):
     tplfile = 'rundb/rundb_files_rows.inc.html'
   #--------------------------------------------------------------------------------------
   tpl = loader.get_template(tplfile)
-  run = Rundbruns.objects.get(runid=request.GET['runid']);
+  run = Rundbruns.objects.get(pk=runid);
   #--------------------------------------------------------------------------------------
   # Context
   #--------------------------------------------------------------------------------------
@@ -128,20 +124,20 @@ def files(request):
                                                 mimetype='application/json');
 
 @login_required
-def file_pin(request):
-  file = Rundbfiles.objects.get(fileid=request.GET['fileid'])
+def file_pin(request,fileid):
+  file = Rundbfiles.objects.get(pk=fileid)
   file.pin(request.user)
   file.save();
   result = simplejson.dumps({'refcount':file.refcount})
   return HttpResponse(result,mimetype='application/json')
 
-def file_log(request):
-  file = Rundbfiles.objects.get(fileid=request.GET['fileid'])
+def file_log(request,fileid):
+  file = Rundbfiles.objects.get(pk=fileid)
   return render_to_response('rundb/rundb_file_log.html',
       {'file':file},context_instance=RequestContext(request))
 
-def run(request):
-  run = Rundbruns.objects.get(runid=request.GET['runid'])
+def run(request,runid):
+  run = Rundbruns.objects.get(pk=runid)
   odins = []
   for i in range(7):
     odins.append(getattr(run,'odin_trg_'+str(i)))
@@ -149,8 +145,8 @@ def run(request):
   return render_to_response('rundb/rundb_run.html',
       {'single':True, 'run':run,'runs':[run],'iodins':range(7),'odins':odins},context_instance=RequestContext(request))
 
-def file(request):
-  file = Rundbfiles.objects.get(fileid=request.GET['fileid'])
+def file(request,fileid):
+  file = Rundbfiles.objects.get(pk=fileid)
   run = file.run
   return render_to_response('rundb/rundb_file.html',
       {'single':True, 'file':file,'files':[file],'run':run},context_instance=RequestContext(request))

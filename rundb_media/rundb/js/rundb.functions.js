@@ -52,7 +52,7 @@ function rundb_showfiles(runid,page)
   var run_files_row = $('#run-files-row-'+runid);
   if (!((run_files_row.length>0) && (page==1))){
 	  $.ajax({
-		    url: '/rundb/files?runid='+runid+'&p='+page,
+		    url: '/rundb/files/'+runid+'/'+page+'/',
 		    cache: false,
 		    success: function(data) {
             if (page==1){
@@ -70,7 +70,7 @@ function rundb_showfiles(runid,page)
 function rundb_file_pin(fileid)
 {
   $.ajax({
-    url: '/rundb/file-pin?fileid='+fileid,
+    url: '/rundb/file-pin/'+fileid,
     cache: false,
     success: function(data) {
         var pin_span = $('#rundb-file-pin-'+fileid+' span');

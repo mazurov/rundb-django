@@ -26,7 +26,7 @@ $(document).ready(function(){
        <tr id="run-{{run.runid}}" class="{% cycle 'odd' 'even' %}">
         <td>
          {% if not single %}
-         <a href="/rundb/run?runid={{run.runid}}"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
+         <a href="/rundb/run/{{run.runid}}/"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
          {%endif%}
          {% if run.has_files %}
          <a href="#" title="Show files" onclick="return rundb_showfiles({{run.runid}},1)" style="text-decoration:none"><span class="ss_sprite ss_application_view_list">&nbsp;</span></a>

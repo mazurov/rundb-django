@@ -6,14 +6,14 @@
             </script>
             <nowrap>
             {% if not single %}
-            <a href="/rundb/file?fileid={{file.fileid}}"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
+            <a href="/rundb/file/{{file.fileid}}/"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
             {% endif %}
             {% if user.is_authenticated %}
       	  	<a href="#" title="{%if file.refcount%}unpin{%else%}pin{%endif%}" style="text-decoration:none" onclick="return rundb_file_pin({{file.fileid}})" id="rundb-file-pin-{{file.fileid}}">
             <span class="ss_sprite  {%if file.refcount%}ss_tag_blue_delete{%else%}ss_tag_blue_add{%endif%}">&nbsp;</span>
             </a>
             {%endif%}
-            <a href="/rundb/file-log?fileid={{file.fileid}}" title="Log for file {{file.name}}" id="rundb-file-log-{{file.fileid}}" style="text-decoration:none;display:{% if file.log.count %}inline{%else%}none{%endif%}" class="rundb-file-log" >
+            <a href="/rundb/file-log/{{file.fileid}}/" title="Log for file {{file.name}}" id="rundb-file-log-{{file.fileid}}" style="text-decoration:none;display:{% if file.log.count %}inline{%else%}none{%endif%}" class="rundb-file-log" >
             <span class="ss_sprite ss_book" style="display:inline">&nbsp;</span>
             </a></nowrap>
 		 </td>
