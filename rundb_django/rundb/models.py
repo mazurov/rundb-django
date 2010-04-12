@@ -135,7 +135,7 @@ class Rundbruns(models.Model):
 
     def tck_hex(self):
         if  self.tck:
-            return "0x%X" % int(self.tck)
+            return "0x%08X" % int(self.tck)
         return ""
 
     class Meta:
