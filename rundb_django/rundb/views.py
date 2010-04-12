@@ -244,10 +244,10 @@ def api_search(request):
   if form.cleaned_data['destination']:
      runs = runs.filter(destination__in=(form.cleaned_data['destination'],))
 
-  if form.cleaned_data['starttime']:
+  if form.cleaned_data['endtime']:
     runs = runs.filter(starttime__lte=form.cleaned_data['endtime'])
 
-  if form.cleaned_data['endtime']:
+  if form.cleaned_data['starttime']:
     runs = runs.filter(endtime__gte=form.cleaned_data['starttime'])
 
 
