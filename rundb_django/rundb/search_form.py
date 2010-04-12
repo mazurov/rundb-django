@@ -4,24 +4,24 @@ from django.forms.extras import SelectDateWidget
 from rundb_django.rundb.models import Rundbruns
 
 class SearchForm(forms.Form):
-  runid         = forms.IntegerField(min_value=1,required=False)
-  partitions    = forms.MultipleChoiceField(required=False)
-  runtypes      = forms.MultipleChoiceField(required=False)
-  destinations  = forms.MultipleChoiceField(required=False)
-  activities     = forms.MultipleChoiceField(required=False)
-  runid_min     = forms.IntegerField(min_value=0,required=False)
-  runid_max     = forms.IntegerField(min_value=0,required=False)
-  startdate     = forms.DateTimeField(('%d.%m.%Y',),widget=forms.DateTimeInput(format='%d.%m.%Y'),required=False)
-  enddate       = forms.DateTimeField(('%d.%m.%Y',),widget=forms.DateTimeInput(format='%d.%m.%Y'),required=False)
-  starttime     = forms.TimeField(required=False)
-  endtime       = forms.TimeField(required=False)
-  pinned        = forms.TypedChoiceField(widget=RadioSelect,required=False,coerce=int, initial=0)
-  pinned_all    = forms.BooleanField(label='Run contains any pinned files',required=False)
-  pinned_user   = forms.BooleanField(label='Run contains files pinned by user',required=False)
-  onpage        = forms.ChoiceField(choices=[(10,10),(50,50),(100,100),
-                                                        (200,200)],initial=10)
+  runid = forms.IntegerField(min_value=1, required=False)
+  partitions = forms.MultipleChoiceField(required=False)
+  runtypes = forms.MultipleChoiceField(required=False)
+  destinations = forms.MultipleChoiceField(required=False)
+  activities = forms.MultipleChoiceField(required=False)
+  runid_min = forms.IntegerField(min_value=0, required=False)
+  runid_max = forms.IntegerField(min_value=0, required=False)
+  startdate = forms.DateTimeField(('%d.%m.%Y',), widget=forms.DateTimeInput(format='%d.%m.%Y'), required=False)
+  enddate = forms.DateTimeField(('%d.%m.%Y',), widget=forms.DateTimeInput(format='%d.%m.%Y'), required=False)
+  starttime = forms.TimeField(required=False)
+  endtime = forms.TimeField(required=False)
+  pinned = forms.TypedChoiceField(widget=RadioSelect, required=False, coerce=int, initial=0)
+  pinned_all = forms.BooleanField(label='Run contains any pinned files', required=False)
+  pinned_user = forms.BooleanField(label='Run contains files pinned by user', required=False)
+  onpage = forms.ChoiceField(choices=[(10, 10), (50, 50), (100, 100),
+                                                        (200, 200)], initial=10)
 
-  def __init__(self,user,partitions, runtypes,destinations, activities, *args, **kwargs):
+  def __init__(self, user, partitions, runtypes, destinations, activities, *args, **kwargs):
     super(SearchForm, self).__init__(*args, **kwargs)
     self.fields['partitions'].choices = partitions
     self.fields['runtypes'].choices = runtypes
@@ -29,10 +29,10 @@ class SearchForm(forms.Form):
     self.fields['activities'].choices = activities
 
     pinned = []
-    pinned.append((0,'Do not check'))
-    pinned.append((1,'Run contains pinned files'))
+    pinned.append((0, 'Do not check'))
+    pinned.append((1, 'Run contains pinned files'))
     if user.is_authenticated():
-       pinned.append((2,"Run contains  files pinned by user %s" % user.username))
+       pinned.append((2, "Run contains  files pinned by user %s" % user.username))
     
     self.fields['pinned'].choices = pinned
 
@@ -62,6 +62,6 @@ class ApiForm(forms.Form):
 
   partition = forms.CharField(required=False)
   destination = forms.CharField(required=False)
-  starttime = forms.DateTimeField(('%Y-%m-%dT%H:%M:%S',),required=False)
-  endtime = forms.DateTimeField(('%Y-%m-%dT%H:%M:%S',),required=False)
+  starttime = forms.DateTimeField(('%Y-%m-%dT%H:%M:%S',), required=False)
+  endtime = forms.DateTimeField(('%Y-%m-%dT%H:%M:%S',), required=False)
     

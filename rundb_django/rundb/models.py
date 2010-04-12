@@ -15,28 +15,28 @@ import logging
 
 class Rundbdictnum(models.Model):
     type = models.CharField(unique=True, max_length=10)
-    key = models.DecimalField(primary_key=True,unique=True, max_digits=0, 
-                                                          decimal_places=-127)
+    key = models.DecimalField(primary_key=True, unique=True, max_digits=0,
+                                                          decimal_places= -127)
     value = models.CharField(max_length=512, blank=True)
     description = models.CharField(max_length=256, blank=True)
     class Meta:
-        db_table =u'rundbdictnum'
+        db_table = u'rundbdictnum'
         managed = False
 
 class Rundbruns(models.Model):
-    runid = models.IntegerField(unique=True,primary_key=True)
+    runid = models.IntegerField(unique=True, primary_key=True)
     fillid = models.IntegerField()
     partitionid = models.IntegerField()
     starttime = models.DateTimeField(null=True, blank=True)
     endtime = models.DateTimeField(null=True, blank=True)
-    startlumi = models.DecimalField(null=True, max_digits=63, 
-                                                decimal_places=-127, 
+    startlumi = models.DecimalField(null=True, max_digits=63,
+                                                decimal_places= -127,
                                                 blank=True)
-    endlumi = models.DecimalField(null=True, max_digits=63, 
-                                  decimal_places=-127, blank=True)
-    _state = models.IntegerField(null=True, blank=True,db_column='state')
-    beamenergy = models.DecimalField(null=True, max_digits=126, 
-                                                decimal_places=-127, 
+    endlumi = models.DecimalField(null=True, max_digits=63,
+                                  decimal_places= -127, blank=True)
+    _state = models.IntegerField(null=True, blank=True, db_column='state')
+    beamenergy = models.DecimalField(null=True, max_digits=126,
+                                                decimal_places= -127,
                                                 blank=True)
     runtype = models.CharField(max_length=255, blank=True)
     partitionname = models.CharField(max_length=16, blank=True)
@@ -59,7 +59,7 @@ class Rundbruns(models.Model):
     _all_destinations = []
     _all_activities = []
 
-    _states =['','ACTIVE','ENDED','MIGRATING','NOT NEEDED','CREATED',
+    _states = ['', 'ACTIVE', 'ENDED', 'MIGRATING', 'NOT NEEDED', 'CREATED',
                                                                     'IN BKK'];
 
     @classmethod
@@ -110,7 +110,7 @@ class Rundbruns(models.Model):
         return result
 
     def has_files(self):
-      return self.rundbfiles_set.count()>0
+      return self.rundbfiles_set.count() > 0
 
     def events(self):
       result = 0
@@ -130,12 +130,14 @@ class Rundbruns(models.Model):
 
     def state(self):
         if self._state >= len(self._states):
-          return ''
+            return ''
         return Rundbruns._states[self._state]
 
+    def tck_hex(self):
+        return "%X" % self.tck
 
     class Meta:
-        db_table =u'rundbruns'
+        db_table = u'rundbruns'
         managed = False
 
 class Rundbrunparams(models.Model):
@@ -144,12 +146,12 @@ class Rundbrunparams(models.Model):
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
     class Meta:
-        db_table =u'rundbrunparams'
+        db_table = u'rundbrunparams'
         managed = False
 
 class Rundbfiles(models.Model):
-    fileid = models.IntegerField(unique=True,primary_key=True)
-    run = models.ForeignKey(Rundbruns,db_column='runid')
+    fileid = models.IntegerField(unique=True, primary_key=True)
+    run = models.ForeignKey(Rundbruns, db_column='runid')
     name = models.CharField(unique=True, max_length=255)
     stateid = models.IntegerField(db_column='state')
     bytes = models.IntegerField(null=True, blank=True)
@@ -190,7 +192,7 @@ class Rundbfiles(models.Model):
       return self.param("directory")
 
 
-    def param(self,name):
+    def param(self, name):
       for param in self.rundbfileparams_set.all():
         if param.name == name:
           return  param.value
@@ -198,24 +200,24 @@ class Rundbfiles(models.Model):
 
     def castor(self):
       if self.run.destination == 'OFFLINE' and self.directory():
-        return self.directory().replace('/daqarea','/castor/cern.ch/grid')+"/"+self.name
+        return self.directory().replace('/daqarea', '/castor/cern.ch/grid') + "/" + self.name
       return None
 
     def has_nevents(self):
       for i in range(7):
-          if not (getattr(self,'nevent_'+i) is None):
+          if not (getattr(self, 'nevent_' + i) is None):
             return False
       return True
     
-    def pin(self,user):
-      if self.refcount==0:
-        self.refcount=1
+    def pin(self, user):
+      if self.refcount == 0:
+        self.refcount = 1
         self.refowner = user.username
       else:
-        self.refcount=0
+        self.refcount = 0
         self.refowner = ''
       log = Rundbdatamover()
-      log.pin(self.name,user.username,self.refcount)
+      log.pin(self.name, user.username, self.refcount)
       log.save()
 
     def log(self):
@@ -231,33 +233,33 @@ class Rundbfiles(models.Model):
         return Rundbfiles._all_states
 
     class Meta:
-        db_table =u'rundbfiles'
+        db_table = u'rundbfiles'
         managed = False
 
 class Rundbfileparams(models.Model):
-    file = models.ForeignKey(Rundbfiles,db_column='fileid',primary_key=True,unique=True)
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
     class Meta:
-        db_table =u'rundbfileparams'
+        db_table = u'rundbfileparams'
         managed = False
 
 class Rundbdatamover(models.Model):
     id = models.CharField(max_length=50, blank=True, unique=True)
     type = models.CharField(max_length=10, blank=True, unique=True)
-    time = models.DateTimeField(null=True, blank=True,auto_now=True,primary_key=True)
+    time = models.DateTimeField(null=True, blank=True, auto_now=True, primary_key=True)
     message = models.CharField(max_length=255, blank=True)
     trials = models.IntegerField(null=True, blank=True)
     
     def file(self):
       return Rundbfiles.objects.get(name=self.id)
     
-    def pin(self,filename,username,refcount):
+    def pin(self, filename, username, refcount):
       self.id = filename
-      self.type="pin"
-      self.message = username+": "
-      if refcount==0:
+      self.type = "pin"
+      self.message = username + ": "
+      if refcount == 0:
           self.message += "UNPINED"
       else:
           self.message += "PINNED"
