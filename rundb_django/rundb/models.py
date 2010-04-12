@@ -126,7 +126,14 @@ class Rundbruns(models.Model):
         if not (physstat is None):
           result += int(physstat)
       return result
-
+  
+    def nevents(self):
+        result = [0 for _ in range(0, 8)]
+        for file in self.rundbfiles_set.all():
+            for i in range(0, 8):
+                if file.__getattribute__('nevent_%d' % i):
+                    result[i] += file.__getattribute__('nevent_%d' % i)
+        return result        
 
     def state(self):
         if self._state >= len(self._states):

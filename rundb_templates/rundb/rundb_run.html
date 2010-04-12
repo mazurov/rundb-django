@@ -22,4 +22,19 @@
   {%endfor%}
 </tr>
 </table>
+
+<table>
+<thead>
+<tr>
+  {% for index in inevents %}
+  <th>nevent_{{index}}</th>
+  {%endfor%}
+</tr>
+</thead>
+<tr>
+  {% for nevent in run.nevents %}
+  <td>{{nevent}}</td>
+  {%endfor%}
+</tr>
+</table>
 {%endblock%}

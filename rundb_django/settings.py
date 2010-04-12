@@ -4,7 +4,7 @@ import os
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 configs = {
-    '/home/mazurov/Projects/rundb/rundb_django': 'production',
+    '/home/mazurov/Projects/RunDb/rundb_django': 'production',
     '/opt/lampp/vhosts/rundb/rundb_django': 'production',
 }
 
@@ -32,7 +32,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = ( 
+TEMPLATE_CONTEXT_PROCESSORS = (
   "django.core.context_processors.request",
   "django.core.context_processors.auth",
   "django.core.context_processors.debug",
@@ -56,7 +56,7 @@ TEMPLATE_DIRS = (
     # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-   ROOT_PATH+'/../rundb_templates',
+   ROOT_PATH + '/../rundb_templates',
 #   '/usr/lib/pymodules/python2.6/debug_toolbar/template',
 )
 
