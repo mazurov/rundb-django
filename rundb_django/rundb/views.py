@@ -245,15 +245,15 @@ def api_search(request):
      runs = runs.filter(destination__in=(form.cleaned_data['destination'],))
 
   if form.cleaned_data['starttime']:
-    runs = runs.filter(starttime__gte=form.cleaned_data['starttime'])
+    runs = runs.filter(starttime__lte=form.cleaned_data['endtime'])
 
   if form.cleaned_data['endtime']:
-    runs = runs.filter(endtime__lte=form.cleaned_data['endtime'])
+    runs = runs.filter(endtime__gte=form.cleaned_data['starttime'])
 
-  print start, rows
 
   count = runs.all().aggregate(Count('runid'))
   runs = runs.all().order_by('-runid')[start:rows]
+
 
   rtn = {
     'totalResults': count['runid__count'],
