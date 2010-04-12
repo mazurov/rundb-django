@@ -134,7 +134,9 @@ class Rundbruns(models.Model):
         return Rundbruns._states[self._state]
 
     def tck_hex(self):
-        return "%X" % self.tck
+        if  self.tck:
+            return "%X" % int(self.tck)
+        return ""
 
     class Meta:
         db_table = u'rundbruns'
