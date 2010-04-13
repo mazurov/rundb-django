@@ -213,10 +213,10 @@ class Rundbfiles(models.Model):
       return None
 
     def has_nevents(self):
-      for i in range(7):
-          if not (getattr(self, 'nevent_' + i) is None):
-            return False
-      return True
+      for i in range(8):
+          if getattr(self, 'nevent_' + i):
+            return True
+      return False
     
     def pin(self, user):
       if self.refcount == 0:
