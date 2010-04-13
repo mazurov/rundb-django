@@ -214,7 +214,7 @@ class Rundbfiles(models.Model):
 
     def has_nevents(self):
       for i in range(8):
-          if getattr(self, 'nevent_' + i):
+          if getattr(self, 'nevent_%i' % i):
             return True
       return False
     
