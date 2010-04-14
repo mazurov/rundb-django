@@ -61,7 +61,12 @@ class Rundbruns(models.Model):
 
     _states = ['', 'ACTIVE', 'ENDED', 'MIGRATING', 'NOT NEEDED', 'CREATED',
                                                                     'IN BKK'];
-
+    _file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
+                      'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
+                      'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
+                      'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
+    
+    _file_counters = {}    
     @classmethod
     def all_subpartitions(cls):
         if 0 == len(Rundbruns._all_subpartitions):
@@ -111,29 +116,20 @@ class Rundbruns(models.Model):
 
     def has_files(self):
       return self.rundbfiles_set.count() > 0
-
-    def events(self):
-      result = 0
-      for file in self.rundbfiles_set.all():
-        if not file.events is None:
-          result += file.events
-      return result
     
-    def physstat(self):
-      result = 0
-      for file in self.rundbfiles_set.all():
-        physstat = file.physstat();
-        if not (physstat is None):
-          result += int(physstat)
-      return result
+    @property
+    def file_counters(self):
+        if not self._file_counters:
+            for key in self._file_counters_keys:
+                self._file_counters.setdefault(key, 0)
+            for file in self.rundbfiles_set.all():
+                for key in self._file_counters_keys:
+                    val = getattr(file, key)
+                    if val:
+                        self._file_counters[key] += int(val) 
+        return self._file_counters        
+    
   
-    def nevents(self):
-        result = [0 for _ in range(0, 8)]
-        for file in self.rundbfiles_set.all():
-            for i in range(0, 8):
-                if file.__getattribute__('nevent_%d' % i):
-                    result[i] += file.__getattribute__('nevent_%d' % i)
-        return result        
 
     def state(self):
         if self._state >= len(self._states):
@@ -179,16 +175,16 @@ class Rundbfiles(models.Model):
     nevent_5 = models.IntegerField(null=True, blank=True)
     nevent_6 = models.IntegerField(null=True, blank=True)
     nevent_7 = models.IntegerField(null=True, blank=True)
-    n_physics_inc = models.IntegerField(null=True, blank=True)
-    n_physics_exc = models.IntegerField(null=True, blank=True)
-    n_minbias_inc = models.IntegerField(null=True, blank=True)
-    n_minbias_exc = models.IntegerField(null=True, blank=True)
-    n_lumi_inc = models.IntegerField(null=True, blank=True)
-    n_lumi_exc = models.IntegerField(null=True, blank=True)
-    n_beamgas_inc = models.IntegerField(null=True, blank=True)
-    n_beamgas_exc = models.IntegerField(null=True, blank=True)
-    n_other_inc = models.IntegerField(null=True, blank=True)
-    n_other_exc = models.IntegerField(null=True, blank=True)
+    #n_physics_inc = models.IntegerField(null=True, blank=True)
+    #n_physics_exc = models.IntegerField(null=True, blank=True)
+    #n_minbias_inc = models.IntegerField(null=True, blank=True)
+    #n_minbias_exc = models.IntegerField(null=True, blank=True)
+    #n_lumi_inc = models.IntegerField(null=True, blank=True)
+    #n_lumi_exc = models.IntegerField(null=True, blank=True)
+    #n_beamgas_inc = models.IntegerField(null=True, blank=True)
+    #n_beamgas_exc = models.IntegerField(null=True, blank=True)
+    #n_other_inc = models.IntegerField(null=True, blank=True)
+    #n_other_exc = models.IntegerField(null=True, blank=True)
 
     _all_states = None
     _state = None
