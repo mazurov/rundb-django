@@ -10,6 +10,7 @@ $(document).ready(function(){
         <tr>
           <th>&nbsp</th>
           <th>RUNID</th>
+          <th>FILLID</th>
           <th>FILES</th>
           <th>PARTITIONNAME / SUBDETECTORS</th>
           <th>RUNTYPE</th>
@@ -33,6 +34,7 @@ $(document).ready(function(){
          {%endif%}
         </td>
         <td>{{run.runid}}</td>
+        <td>{{run.fillid}}</td>
         <td>{{ run.rundbfiles_set.count }}</td>
         <td>{{ run.partitionname }}<br/>
            {% for partition in run.subpartitions %}
