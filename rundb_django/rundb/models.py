@@ -61,10 +61,12 @@ class Rundbruns(models.Model):
 
     _states = ['', 'ACTIVE', 'ENDED', 'MIGRATING', 'NOT NEEDED', 'CREATED',
                                                                     'IN BKK'];
-    _file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
-                      'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
-                      'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
-                      'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
+    #_file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
+    #                  'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
+    #                  'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
+    #                  'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
+    
+    _file_counters_keys = ['events', 'physstat']    
     
     _file_counters = {}    
     @classmethod
@@ -125,6 +127,8 @@ class Rundbruns(models.Model):
             for file in self.rundbfiles_set.all():
                 for key in self._file_counters_keys:
                     val = getattr(file, key)
+                    if callable(val):
+                        val = val()
                     if val:
                         self._file_counters[key] += int(val) 
         return self._file_counters        
