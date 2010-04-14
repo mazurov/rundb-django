@@ -61,12 +61,12 @@ class Rundbruns(models.Model):
 
     _states = ['', 'ACTIVE', 'ENDED', 'MIGRATING', 'NOT NEEDED', 'CREATED',
                                                                     'IN BKK'];
-    #_file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
-    #                  'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
-    #                  'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
-    #                  'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
+    _file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
+                      'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
+                      'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
+                      'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
     
-    _file_counters_keys = ['events', 'physstat']    
+    #_file_counters_keys = ['events', 'physstat']    
     
     _file_counters = {} 
     
@@ -186,16 +186,16 @@ class Rundbfiles(models.Model):
     nevent_5 = models.IntegerField(null=True, blank=True)
     nevent_6 = models.IntegerField(null=True, blank=True)
     nevent_7 = models.IntegerField(null=True, blank=True)
-    #n_physics_inc = models.IntegerField(null=True, blank=True)
-    #n_physics_exc = models.IntegerField(null=True, blank=True)
-    #n_minbias_inc = models.IntegerField(null=True, blank=True)
-    #n_minbias_exc = models.IntegerField(null=True, blank=True)
-    #n_lumi_inc = models.IntegerField(null=True, blank=True)
-    #n_lumi_exc = models.IntegerField(null=True, blank=True)
-    #n_beamgas_inc = models.IntegerField(null=True, blank=True)
-    #n_beamgas_exc = models.IntegerField(null=True, blank=True)
-    #n_other_inc = models.IntegerField(null=True, blank=True)
-    #n_other_exc = models.IntegerField(null=True, blank=True)
+    n_physics_inc = models.IntegerField(null=True, blank=True)
+    n_physics_exc = models.IntegerField(null=True, blank=True)
+    n_minbias_inc = models.IntegerField(null=True, blank=True)
+    n_minbias_exc = models.IntegerField(null=True, blank=True)
+    n_lumi_inc = models.IntegerField(null=True, blank=True)
+    n_lumi_exc = models.IntegerField(null=True, blank=True)
+    n_beamgas_inc = models.IntegerField(null=True, blank=True)
+    n_beamgas_exc = models.IntegerField(null=True, blank=True)
+    n_other_inc = models.IntegerField(null=True, blank=True)
+    _other_exc = models.IntegerField(null=True, blank=True)
 
     _all_states = None
     _state = None

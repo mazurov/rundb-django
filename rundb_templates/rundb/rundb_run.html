@@ -26,15 +26,25 @@
 <table>
 <thead>
 <tr>
-  {% for index in inevents %}
-  <th>nevent_{{index}}</th>
-  {%endfor%}
+  <th>nevent_0</th>
+  <th>nevent_1</th>
+  <th>nevent_2</th>
+  <th>nevent_3</th>
+  <th>nevent_4</th>
+  <th>nevent_5</th>
+  <th>nevent_6</th>
+  <th>nevent_7</th>
 </tr>
 </thead>
 <tr>
-  {% for nevent in run.nevents %}
-  <td>{{nevent}}</td>
-  {%endfor%}
+  <td>{{run.file_counters.nevent_0}}</td>
+  <td>{{run.file_counters.nevent_1}}</td>  
+  <td>{{run.file_counters.nevent_2}}</td>
+  <td>{{run.file_counters.nevent_3}}</td>
+  <td>{{run.file_counters.nevent_4}}</td>
+  <td>{{run.file_counters.nevent_5}}</td>
+  <td>{{run.file_counters.nevent_6}}</td>  
+  <td>{{run.file_counters.nevent_7}}</td>
 </tr>
 </table>
 {%endblock%}
