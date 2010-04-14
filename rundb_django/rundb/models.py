@@ -195,7 +195,7 @@ class Rundbfiles(models.Model):
     n_beamgas_inc = models.IntegerField(null=True, blank=True)
     n_beamgas_exc = models.IntegerField(null=True, blank=True)
     n_other_inc = models.IntegerField(null=True, blank=True)
-    _other_exc = models.IntegerField(null=True, blank=True)
+    n_other_exc = models.IntegerField(null=True, blank=True)
 
     _all_states = None
     _state = None
