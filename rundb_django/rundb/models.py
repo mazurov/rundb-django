@@ -68,7 +68,12 @@ class Rundbruns(models.Model):
     
     _file_counters_keys = ['events', 'physstat']    
     
-    _file_counters = {}    
+    _file_counters = {} 
+    
+    def __init__(self, *args, **kwargs): 
+        super(Rundbruns, self).__init__(*args, **kwargs)
+        self._file_counters = {}
+                
     @classmethod
     def all_subpartitions(cls):
         if 0 == len(Rundbruns._all_subpartitions):
@@ -120,6 +125,7 @@ class Rundbruns(models.Model):
       return self.rundbfiles_set.count() > 0
   
    
+    @property
     def file_counters(self):
         if not self._file_counters:
             for key in self._file_counters_keys:
@@ -145,10 +151,6 @@ class Rundbruns(models.Model):
             return "0x%08X" % int(self.tck)
         return ""
 
-    def __getattr__(self, name):
-        if self.file_counters().has_key(name):
-            return self.file_counters()[name]
-        raise AttributeError(name)
 
     class Meta:
         db_table = u'rundbruns'

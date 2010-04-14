@@ -44,9 +44,9 @@ $(document).ready(function(){
         <td>{{run.runtype}}</td>
         <td>{{run.activity}}</td>
         <td>{{run.tck_hex}}</td>
-        <td>{{run.events}}</td>
-        <td>{{run.physstat}}</td>
-        <td>{{run.state}}</td>
+        <td>{{run.file_counters.events}}</td>
+        <td>{{run.file_counters.physstat}}</td>
+        <td>{{run.file_counters.state}}</td>
         <td>{{run.destination}}</td>
         <td>{{run.starttime|date:"Y-m-d H:i:s" }}<br/> {{run.endtime|date:"Y-m-d H:i:s" }}</td>
         </tr>
