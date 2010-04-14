@@ -7,7 +7,31 @@
 {%block content%}
 <br/>
 {% include "rundb/rundb_files_table.inc.html" %}
-
+<table>
+  <tr>
+    <th>Physics</th>
+    <th>Lumi</th>
+    <th>MinBias</th>
+    <th>BeamGas</th>
+    <th>Other</th>
+  </tr>
+  <tr>
+    <th>Inclusive</th>
+    <td>{{file.n_physics_inc}}</td>
+    <td>{{file.n_minbias_inc}}</td>
+    <td>{{file.n_lumi_inc}}</td>
+    <td>{{file.n_beamgas_inc}}</td>
+    <td>{{file.n_other_inc}}</td>
+  </tr>
+  <tr>
+    <th>Exclusive</th>
+    <td>{{file.n_physics_exc}}</td>
+    <td>{{file.n_minbias_exc}}</td>
+    <td>{{file.n_lumi_exc}}</td>
+    <td>{{file.n_beamgas_exc}}</td>
+    <td>{{file.n_other_exc}}</td>
+  </tr>  
+</table>
 <table>
 <thead>
 <tr>

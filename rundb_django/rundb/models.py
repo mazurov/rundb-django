@@ -179,6 +179,16 @@ class Rundbfiles(models.Model):
     nevent_5 = models.IntegerField(null=True, blank=True)
     nevent_6 = models.IntegerField(null=True, blank=True)
     nevent_7 = models.IntegerField(null=True, blank=True)
+    n_physics_inc = models.IntegerField(null=True, blank=True)
+    n_physics_exc = models.IntegerField(null=True, blank=True)
+    n_minbias_inc = models.IntegerField(null=True, blank=True)
+    n_minbias_exc = models.IntegerField(null=True, blank=True)
+    n_lumi_inc = models.IntegerField(null=True, blank=True)
+    n_lumi_exc = models.IntegerField(null=True, blank=True)
+    n_beamgas_inc = models.IntegerField(null=True, blank=True)
+    n_beamgas_exc = models.IntegerField(null=True, blank=True)
+    n_other_inc = models.IntegerField(null=True, blank=True)
+    n_other_exc = models.IntegerField(null=True, blank=True)
 
     _all_states = None
     _state = None
