@@ -47,4 +47,48 @@
   <td>{{run.file_counters.nevent_7}}</td>
 </tr>
 </table>
+
+<table>
+<thead>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Physics</th>
+    <th>Lumi</th>
+    <th>MinBias</th>
+    <th>BeamGas</th>
+    <th>Other</th>
+  </tr>
+</thead>  
+  <tr>
+    <th>Inclusive:</th>
+    <td>{{run.file_counters.n_physics_inc}}</td>
+    <td>{{run.file_counters.n_minbias_inc}}</td>
+    <td>{{run.file_counters.n_lumi_inc}}</td>
+    <td>{{run.file_counters.n_beamgas_inc}}</td>
+    <td>{{run.file_counters.n_other_inc}}</td>
+  </tr>
+  <tr>
+    <th>Exclusive:</th>
+    <td>{{run.file_counters.n_physics_exc}}</td>
+    <td>{{run.file_counters.n_minbias_exc}}</td>
+    <td>{{run.file_counters.n_lumi_exc}}</td>
+    <td>{{run.file_counters.n_beamgas_exc}}</td>
+    <td>{{run.file_counters.n_other_exc}}</td>
+  </tr>  
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>Reference count</th>
+  <th>Reference owner</th>
+  <th>Reference date</th>
+</tr>
+</thead>
+<tr>
+  <td>{{file.refcount}}</td>
+  <td>{{file.refowner}}</td>
+  <td>{{file.refdate}}</td>
+</tr>
+</table>
 {%endblock%}
