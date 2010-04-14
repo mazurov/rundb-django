@@ -118,8 +118,8 @@ class Rundbruns(models.Model):
 
     def has_files(self):
       return self.rundbfiles_set.count() > 0
-    
-    @property
+  
+   
     def file_counters(self):
         if not self._file_counters:
             for key in self._file_counters_keys:
@@ -144,6 +144,11 @@ class Rundbruns(models.Model):
         if  self.tck:
             return "0x%08X" % int(self.tck)
         return ""
+
+    def __getattr__(self, name):
+        if self.file_counters().has_key(name):
+            return self.file_counters()[name]
+        raise AttributeError(name)
 
     class Meta:
         db_table = u'rundbruns'
