@@ -11,15 +11,25 @@
 <table>
 <thead>
 <tr>
-  {% for index in iodins %}
-  <th>odin_trg_{{index}}</th>
-  {%endfor%}
+  <th>odin_trg_0</th>
+  <th>odin_trg_1</th>
+  <th>odin_trg_2</th>
+  <th>odin_trg_3</th>
+  <th>odin_trg_4</th>
+  <th>odin_trg_5</th>
+  <th>odin_trg_6</th>
+  <th>odin_trg_7</th>          
 </tr>
 </thead>
 <tr>
-  {% for odin in odins %}
-  <td>{{odin}}</td>
-  {%endfor%}
+  <td>{{run.odin_trg_0}}</td>
+  <td>{{run.odin_trg_1}}</td>
+  <td>{{run.odin_trg_2}}</td>
+  <td>{{run.odin_trg_3}}</td>
+  <td>{{run.odin_trg_4}}</td>
+  <td>{{run.odin_trg_5}}</td>
+  <td>{{run.odin_trg_6}}</td>
+  <td>{{run.odin_trg_7}}</td>        
 </tr>
 </table>
 
@@ -62,16 +72,16 @@
   <tr>
     <th>Inclusive:</th>
     <td>{{run.file_counters.n_physics_inc}}</td>
+    <td>{{run.file_counters.n_lumi_inc}}</td>    
     <td>{{run.file_counters.n_minbias_inc}}</td>
-    <td>{{run.file_counters.n_lumi_inc}}</td>
     <td>{{run.file_counters.n_beamgas_inc}}</td>
     <td>{{run.file_counters.n_other_inc}}</td>
   </tr>
   <tr>
     <th>Exclusive:</th>
     <td>{{run.file_counters.n_physics_exc}}</td>
+    <td>{{run.file_counters.n_lumi_exc}}</td>    
     <td>{{run.file_counters.n_minbias_exc}}</td>
-    <td>{{run.file_counters.n_lumi_exc}}</td>
     <td>{{run.file_counters.n_beamgas_exc}}</td>
     <td>{{run.file_counters.n_other_exc}}</td>
   </tr>  

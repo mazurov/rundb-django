@@ -138,12 +138,9 @@ def file_log(request, fileid):
 
 def run(request, runid):
   run = Rundbruns.objects.get(pk=runid)
-  odins = []
-  for i in range(8):
-    odins.append(getattr(run, 'odin_trg_' + str(i)))
 
   return render_to_response('rundb/rundb_run.html',
-      {'single':True, 'run':run, 'runs':[run], 'iodins':range(8), 'odins':odins}, context_instance=RequestContext(request))
+      {'single':True, 'run':run, 'runs':[run]}, context_instance=RequestContext(request))
 
 def file(request, fileid):
   file = Rundbfiles.objects.get(pk=fileid)
