@@ -122,7 +122,7 @@ class Rundbruns(models.Model):
         return result
 
     def has_files(self):
-      return self.rundbfiles_set.count() > 0
+        return self.rundbfiles_set.count() > 0
   
    
     @property
@@ -131,6 +131,8 @@ class Rundbruns(models.Model):
             for key in self._file_counters_keys:
                 self._file_counters.setdefault(key, 0)
             for file in self.rundbfiles_set.all():
+                if file.stream != 'FULL':
+                    continue
                 for key in self._file_counters_keys:
                     val = getattr(file, key)
                     if callable(val):
