@@ -87,6 +87,23 @@
   </tr>  
 </table>
 
+{% if run.params %}
+<table>
+<thead>
+<tr>
+{% for key in run.params.keys %}
+  <th>{{key}}</th>
+{% endfor %}
+</tr>
+</thead>
+<tr>
+{% for value in run.params.values %}
+  <td>{{value}}</td>
+{%endfor%}
+</tr>
+</table>
+{%endif%}
+
 <table>
 <thead>
 <tr>

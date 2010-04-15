@@ -69,6 +69,7 @@ class Rundbruns(models.Model):
     #_file_counters_keys = ['events', 'physstat']    
     
     _file_counters = {} 
+    _params = {}
     
     def __init__(self, *args, **kwargs): 
         super(Rundbruns, self).__init__(*args, **kwargs)
@@ -153,13 +154,19 @@ class Rundbruns(models.Model):
             return "0x%08X" % int(self.tck)
         return ""
 
+    @property
+    def params(self):
+        if not self._params:
+            for param in self.rundbrunparams_set.all():
+                self._params[param.name] = param.value
+        return self._params
 
     class Meta:
         db_table = u'rundbruns'
         managed = False
 
 class Rundbrunparams(models.Model):
-    runid = models.IntegerField(unique=True)
+    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True, unique=True)    
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
