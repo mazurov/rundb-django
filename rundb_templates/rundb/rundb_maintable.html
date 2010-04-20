@@ -3,6 +3,7 @@
 <script language="javascript">
 $(document).ready(function(){
   $("#runtable").floatHeader();
+	$(".ss_lightbulb").tooltip();   
 });
 </script>
     <table id="runtable">
@@ -12,12 +13,12 @@ $(document).ready(function(){
           <th>RUNID</th>
           <th>FILLID</th>
           <th>FILES</th>
-          <th>PARTITIONNAME / SUBDETECTORS</th>
+          <th>PARTITION / MISSING SUBDETECTORS</th>
           <th>RUNTYPE</th>
           <th>ACTIVITY</th>
           <th>TCK</th>
-          <th>EVENTS</th>
-          <th>PHYSSTAT</th>
+          <th>EVENTS<span class="ss_sprite ss_lightbulb" title="Total number of events in FULL stream">&nbsp;</span></th>
+          <th>PHYSSTAT<span class="ss_sprite ss_lightbulb" title="Total number of non-nanoified events in FULL stream">&nbsp;</span></th>
           <th>STATE</th>
           <th>DESTINATION</th>
           <th>START/END</th>
@@ -37,7 +38,12 @@ $(document).ready(function(){
         <td>{{run.fillid}}</td>
         <td>{{ run.rundbfiles_set.count }}</td>
         <td>{{ run.partitionname }}<br/>
+           <!-- 
            {% for partition in run.subpartitions %}
+            {{ partition }}
+           {% endfor %}
+           -->
+           {% for partition in run.xsubpartitions %}
             {{ partition }}
            {% endfor %}
         </td>

@@ -5,3 +5,9 @@
     cursor: text;
     color: #999;
 }
+
+.b-ul-inline li
+{
+  display:inline;
+  margin-left: 10px;
+}

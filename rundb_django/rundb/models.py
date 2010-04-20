@@ -10,8 +10,7 @@
 # into your database.
 
 from django.db import models
-from django.contrib.auth.models import User
-import logging
+
 
 class Rundbdictnum(models.Model):
     type = models.CharField(unique=True, max_length=10)
@@ -78,50 +77,53 @@ class Rundbruns(models.Model):
     @classmethod
     def all_subpartitions(cls):
         if 0 == len(Rundbruns._all_subpartitions):
-           Rundbruns._all_subpartitions = list(
+            Rundbruns._all_subpartitions = list(
                     Rundbdictnum.objects.filter(type='DET').order_by('value'))
         return Rundbruns._all_subpartitions
     
     @classmethod
     def all_activities(cls):
-      if 0 == len(Rundbruns._all_activities):
-        for item in Rundbruns.objects.values("activity").distinct().\
+        if 0 == len(Rundbruns._all_activities):
+            for item in Rundbruns.objects.values("activity").distinct().\
                                                     order_by("activity"):
-          Rundbruns._all_activities.append(item['activity'])
-      return Rundbruns._all_activities
+                Rundbruns._all_activities.append(item['activity'])
+        return Rundbruns._all_activities
     
     @classmethod
     def all_partitions(cls):
-      if 0 == len(Rundbruns._all_partitions):
-        for item in Rundbruns.objects.values("partitionname").distinct().\
+        if 0 == len(Rundbruns._all_partitions):
+            for item in Rundbruns.objects.values("partitionname").distinct().\
                                                     order_by("partitionname"):
-          Rundbruns._all_partitions.append(item['partitionname'])
-      return Rundbruns._all_partitions
-
+                Rundbruns._all_partitions.append(item['partitionname'])
+        return Rundbruns._all_partitions
 
     @classmethod
     def all_runtypes(cls):
-      if 0 == len(Rundbruns._all_runtypes):
-        for runtype in Rundbruns.objects.values("runtype").distinct().\
+        if 0 == len(Rundbruns._all_runtypes):
+            for runtype in Rundbruns.objects.values("runtype").distinct().\
                                                           order_by("runtype"):
-          Rundbruns._all_runtypes.append(runtype['runtype'])
-      return Rundbruns._all_runtypes
+                Rundbruns._all_runtypes.append(runtype['runtype'])
+        return Rundbruns._all_runtypes
     
     @classmethod
     def all_destinations(cls):
-      if 0 == len(Rundbruns._all_destinations):
-        for destination in Rundbruns.objects.values("destination").\
+        if 0 == len(Rundbruns._all_destinations):
+            for destination in Rundbruns.objects.values("destination").\
                                           distinct().order_by("destination"):
-          Rundbruns._all_destinations.append(destination['destination'])
-      return Rundbruns._all_destinations
+                Rundbruns._all_destinations.append(destination['destination'])
+        return Rundbruns._all_destinations
 
+    @property
     def subpartitions(self):
-        result = []
         for partition in Rundbruns.all_subpartitions():
             if 0 != (int(partition.key) & int(self.partitionid)):
-                result.append(partition.value)
-        return result
+                yield partition.value
+    
+    @property
+    def xsubpartitions(self):
+        return [p.value for p in Rundbruns.all_subpartitions() if p.value not in self.subpartitions] 
 
+    @property
     def has_files(self):
         return self.rundbfiles_set.count() > 0
   
@@ -144,11 +146,12 @@ class Rundbruns(models.Model):
     
   
 
+    @property
     def state(self):
         if self._state >= len(self._states):
             return ''
         return Rundbruns._states[self._state]
-
+    @property
     def tck_hex(self):
         if  self.tck:
             return "0x%08X" % int(self.tck)
@@ -211,52 +214,52 @@ class Rundbfiles(models.Model):
     _params = None
 
     def state(self):
-      if None == self._state:
-        for state in Rundbfiles.all_states():
-          if state.key == self.stateid:
-            self._state = state.value
+        if None == self._state:
+            for state in Rundbfiles.all_states():
+                if state.key == self.stateid:
+                    self._state = state.value
       
-      if None == self._state:
-        self._state = 'UNDEFINED'
-      return self._state
+        if None == self._state:
+            self._state = 'UNDEFINED'
+        return self._state
 
     def physstat(self):
-      return self.param("physstat")
+        return self.param("physstat")
     
     def directory(self):
-      return self.param("directory")
+        return self.param("directory")
 
 
     def param(self, name):
-      for param in self.rundbfileparams_set.all():
-        if param.name == name:
-          return  param.value
-      return None
+        for param in self.rundbfileparams_set.all():
+            if param.name == name:
+                return  param.value
+        return None
 
     def castor(self):
-      if self.run.destination == 'OFFLINE' and self.directory():
-        return self.directory().replace('/daqarea', '/castor/cern.ch/grid') + "/" + self.name
-      return None
+        if self.run.destination == 'OFFLINE' and self.directory():
+            return self.directory().replace('/daqarea', '/castor/cern.ch/grid') + "/" + self.name
+        return None
 
     def has_nevents(self):
-      for i in range(8):
-          if getattr(self, 'nevent_%i' % i):
-            return True
-      return False
+        for i in range(8):
+            if getattr(self, 'nevent_%i' % i):
+                return True
+        return False
     
     def pin(self, user):
-      if self.refcount == 0:
-        self.refcount = 1
-        self.refowner = user.username
-      else:
-        self.refcount = 0
-        self.refowner = ''
-      log = Rundbdatamover()
-      log.pin(self.name, user.username, self.refcount)
-      log.save()
+        if self.refcount == 0:
+            self.refcount = 1
+            self.refowner = user.username
+        else:
+            self.refcount = 0
+            self.refowner = ''
+        log = Rundbdatamover()
+        log.pin(self.name, user.username, self.refcount)
+        log.save()
 
     def log(self):
-      return Rundbdatamover.objects.filter(id=self.name).order_by('-time')
+        return Rundbdatamover.objects.filter(id=self.name).order_by('-time')
     
     def shortlog(self):
         return self.log()[0:10]
@@ -264,7 +267,7 @@ class Rundbfiles(models.Model):
     @classmethod
     def all_states(cls):
         if None == Rundbfiles._all_states:
-           Rundbfiles._all_states = list(Rundbdictnum.objects.filter(type='FSTATE').order_by('value'))
+            Rundbfiles._all_states = list(Rundbdictnum.objects.filter(type='FSTATE').order_by('value'))
         return Rundbfiles._all_states
 
     class Meta:
@@ -288,16 +291,17 @@ class Rundbdatamover(models.Model):
     trials = models.IntegerField(null=True, blank=True)
     
     def file(self):
-      return Rundbfiles.objects.get(name=self.id)
+        return Rundbfiles.objects.get(name=self.id)
     
     def pin(self, filename, username, refcount):
-      self.id = filename
-      self.type = "pin"
-      self.message = username + ": "
-      if refcount == 0:
-          self.message += "UNPINED"
-      else:
-          self.message += "PINNED"
+        self.id = filename
+        self.type = "pin"
+        self.message = username + ": "
+        if refcount == 0:
+            self.message += "UNPINED"
+        else:
+            self.message += "PINNED"
+    
     class Meta:
         db_table = u'rundbdatamover'
         managed = False
