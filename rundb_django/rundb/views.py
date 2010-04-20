@@ -203,7 +203,7 @@ def _api_run_as_json(run):
     for a in attrs:
         result[a] = getattr(run, a).strftime("%Y-%m-%dT%H:%M:%S%z")
 
-    result['state'] = run.state()
+    result['state'] = run.state
     return result
 
 
