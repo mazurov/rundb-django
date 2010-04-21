@@ -1,4 +1,4 @@
-from datetime  import datetime
+from datetime  import datetime, time
 from django.template import RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.utils import simplejson
@@ -75,10 +75,10 @@ def maintable(request):
     
           
             if form.cleaned_data['startdate']:
-                starttime = datetime.datetime.combine(
-                            form.cleaned_data['startdate'], datetime.time.min)
+                starttime = datetime.combine(
+                            form.cleaned_data['startdate'], time.min)
                 if form.cleaned_data['starttime']:
-                    starttime = datetime.datetime.combine(starttime,
+                    starttime = datetime.combine(starttime,
                                                 form.cleaned_data['starttime'])
                 runs = runs.filter(starttime__gte=starttime)
             else:
@@ -88,10 +88,10 @@ def maintable(request):
                     runs = runs.filter(starttime__gte=starttime)
           
             if form.cleaned_data['enddate']:
-                endtime = datetime.datetime.combine(
-                                form.cleaned_data['enddate'], datetime.time.max)
+                endtime = datetime.combine(
+                                form.cleaned_data['enddate'], time.max)
                 if form.cleaned_data['endtime']:
-                    endtime = datetime.datetime.combine(endtime,
+                    endtime = datetime.combine(endtime,
                                                 form.cleaned_data['endtime'])
                 runs = runs.filter(endtime__lte=endtime)
             else:
@@ -101,6 +101,7 @@ def maintable(request):
                     runs = runs.filter(endtime__gte=endtime)
 
         tpl = loader.get_template('rundb/rundb_maintable.html')
+        
         ctx = RequestContext(request,
                              {'runs': runs.all().
                             order_by('-runid')[0:form.cleaned_data['onpage']]})

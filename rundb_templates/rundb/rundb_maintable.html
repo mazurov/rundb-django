@@ -3,7 +3,8 @@
 <script language="javascript">
 $(document).ready(function(){
   $("#runtable").floatHeader();
-	$(".ss_lightbulb").tooltip();   
+  $(".ss_lightbulb").tooltip();
+  
 });
 </script>
     <table id="runtable">
@@ -17,9 +18,9 @@ $(document).ready(function(){
           <th>RUNTYPE</th>
           <th>ACTIVITY</th>
           <th>TCK</th>
-          <th>EVENTS<span class="ss_sprite ss_lightbulb" title="Total number of events in FULL stream">&nbsp;</span></th>
-          <th>PHYSSTAT<span class="ss_sprite ss_lightbulb" title="Total number of non-nanoified events in FULL stream">&nbsp;</span></th>
-          <th>STATE</th>
+          <th>EVENTS{% with "Total number of_events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+          <th>PHYSSTAT{% with "Total number of non-nanoified events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+          <th>STATE </th>
           <th>DESTINATION</th>
           <th>START/END</th>
         </tr>
