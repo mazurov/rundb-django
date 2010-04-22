@@ -51,6 +51,8 @@ def maintable(request):
         if form.cleaned_data['runid']:
             runs = runs.filter(runid=form.cleaned_data['runid'])
         else:
+            if form.cleaned_data['fillid']:
+                runs = runs.filter(fillid=form.cleaned_data['fillid'])
             if form.cleaned_data['runid_min']:
                 runs = runs.filter(runid__gte=form.cleaned_data['runid_min'])
             if form.cleaned_data['runid_max']:

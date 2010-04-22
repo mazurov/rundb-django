@@ -3,6 +3,7 @@ from django.forms.widgets import RadioSelect
 
 class SearchForm(forms.Form):
     runid = forms.IntegerField(min_value=1, required=False)
+    fillid = forms.IntegerField(min_value=1, required=False)
     partitions = forms.MultipleChoiceField(required=False)
     runtypes = forms.MultipleChoiceField(required=False)
     destinations = forms.MultipleChoiceField(required=False)
