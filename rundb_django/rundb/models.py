@@ -129,6 +129,10 @@ class Rundbruns(models.Model):
         return self.subpartitions_count < 8
     
     @property
+    def is_subpartitions_complete(self):
+        return self.subpartitions_count == 16
+    
+    @property
     def xsubpartitions(self):
         if self.is_subpartitions_short:
             xpartitions = int('0xFFFF', 16) ^ self.partitionid

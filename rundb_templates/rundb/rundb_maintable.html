@@ -43,7 +43,7 @@ $(document).ready(function(){
               {{ partition }}
             {% endfor %}
            {% else %}
-           {% if run.xsubpartitions %}
+           {% if not run.is_subpartitions_complete %}
            <b>all but</b>
            {% for partition in run.xsubpartitions %}
             {{ partition }}
