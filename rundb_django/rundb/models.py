@@ -140,7 +140,7 @@ class Rundbruns(models.Model):
         if self.is_subpartitions_short:
             xpartitions = int('0xFFFF', 16) ^ self.partitionid
         else:
-            xpartitions = int('0x7FFF', 16) ^ self.partitionid 
+            xpartitions = int('0x1FFFF', 16) ^ self.partitionid 
         for partition in Rundbruns.all_subpartitions():
             if 0 != (int(partition.key) & xpartitions):
                 yield partition.value            
