@@ -43,11 +43,16 @@ $(document).ready(function(){
               {{ partition }}
             {% endfor %}
            {% else %}
+           {% if run.xsubpartition %}
            <b>all but</b>
            {% for partition in run.xsubpartitions %}
             {{ partition }}
            {% endfor %}
+           {%else%}
+           complete
            {% endif %}
+           {% endif %}
+           
         </td>
         <td>{{run.runtype}}</td>
         <td>{{run.activity}}</td>
