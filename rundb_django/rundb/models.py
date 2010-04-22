@@ -130,7 +130,10 @@ class Rundbruns(models.Model):
     
     @property
     def is_subpartitions_complete(self):
-        return (int('0xFFFF', 16) ^ self.partitionid) == 0
+        if not self.is_subpartitions_short:
+            return (int('0x7FFF', 16) ^ self.partitionid) == 0
+        else:
+            return (int('0xFFFF', 16) ^ self.partitionid) == 0
     
     @property
     def xsubpartitions(self):
