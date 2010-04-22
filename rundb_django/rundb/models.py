@@ -130,7 +130,7 @@ class Rundbruns(models.Model):
     
     @property
     def is_subpartitions_complete(self):
-        return self.subpartitions_count == 15
+        return (int('0xFFFF', 16) ^ self.partitionid) == 0
     
     @property
     def xsubpartitions(self):
