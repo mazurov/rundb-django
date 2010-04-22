@@ -10,14 +10,14 @@
 <table>
 <thead>
 <tr>
-  <th>nevent_0 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 0 (physics) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_1 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 1 (beam-gas) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_2 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 2 (Lumi) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_3 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 3 (technical) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_4 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 4 (auxiliary) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_5 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 5 (nonZSup) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_6 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 6 (timing) events in FULL stream">&nbsp;</span></th>
-  <th>nevent_7 <span class="ss_sprite ss_lightbulb" title="Number of ODIN type 7 (calibration) events in FULL stream">&nbsp;</span></th>
+  <th>nevent_0{% with "Number of ODIN type 0 (physics) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_1{% with "Number of ODIN type 1 (beam-gas) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_2{% with "Number of ODIN type 2 (Lumi) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_3{% with "Number of ODIN type 3 (technical) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_4{% with "Number of ODIN type 4 (auxiliary) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_5{% with "Number of ODIN type 5 (nonZSup) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_6{% with "Number of ODIN type 6 (timing) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
+  <th>nevent_7{% with "Number of ODIN type 7 (calibration) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
 </tr>
 </thead>
 <tr>
@@ -31,36 +31,7 @@
   <td>{{run.file_counters.nevent_7}}</td>
 </tr>
 </table>
-
-<table>
-<thead>
-  <tr>
-    <th>&nbsp;</th>
-    <th>Physics</th>
-    <th>Lumi</th>
-    <th>MinBias</th>
-    <th>BeamGas</th>
-    <th>Other</th>
-  </tr>
-</thead>  
-  <tr>
-    <th>Inclusive:</th>
-    <td>{{run.file_counters.n_physics_inc}}</td>
-    <td>{{run.file_counters.n_lumi_inc}}</td>    
-    <td>{{run.file_counters.n_minbias_inc}}</td>
-    <td>{{run.file_counters.n_beamgas_inc}}</td>
-    <td>{{run.file_counters.n_other_inc}}</td>
-  </tr>
-  <tr>
-    <th>Exclusive:</th>
-    <td>{{run.file_counters.n_physics_exc}}</td>
-    <td>{{run.file_counters.n_lumi_exc}}</td>    
-    <td>{{run.file_counters.n_minbias_exc}}</td>
-    <td>{{run.file_counters.n_beamgas_exc}}</td>
-    <td>{{run.file_counters.n_other_exc}}</td>
-  </tr>  
-</table>
-
+{%with run.file_counters as file%}{% include "rundb/rundb_files_stat.html" %}{%endwith%}
 {% if run.params %}
 <table>
 <thead>

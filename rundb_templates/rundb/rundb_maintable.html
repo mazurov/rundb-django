@@ -3,8 +3,7 @@
 <script language="javascript">
 $(document).ready(function(){
   $("#runtable").floatHeader();
-  $(".ss_lightbulb").tooltip();
-  
+  $("#runtable").find(".ss_lightbulb").tooltip();
 });
 </script>
     <table id="runtable">
@@ -14,7 +13,7 @@ $(document).ready(function(){
           <th>RUNID</th>
           <th>FILLID</th>
           <th>FILES</th>
-          <th>PARTITION / MISSING SUBDETECTORS</th>
+          <th>PARTITION: SUBDETECTORS</th>
           <th>RUNTYPE</th>
           <th>ACTIVITY</th>
           <th>TCK</th>
@@ -38,15 +37,17 @@ $(document).ready(function(){
         <td>{{run.runid}}</td>
         <td>{{run.fillid}}</td>
         <td>{{ run.rundbfiles_set.count }}</td>
-        <td>{{ run.partitionname }}<br/>
-           <!-- 
-           {% for partition in run.subpartitions %}
-            {{ partition }}
-           {% endfor %}
-           -->
+        <td>{{ run.partitionname }}: 
+           {% if run.is_subpartitions_short %} 
+            {% for partition in run.subpartitions %}
+              {{ partition }}
+            {% endfor %}
+           {% else %}
+           <b>all but</b>
            {% for partition in run.xsubpartitions %}
             {{ partition }}
            {% endfor %}
+           {% endif %}
         </td>
         <td>{{run.runtype}}</td>
         <td>{{run.activity}}</td>

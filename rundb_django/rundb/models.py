@@ -10,6 +10,7 @@
 # into your database.
 
 from django.db import models
+from rundb_django import utils
 
 
 class Rundbdictnum(models.Model):
@@ -60,12 +61,12 @@ class Rundbruns(models.Model):
 
     _states = ['', 'ACTIVE', 'ENDED', 'MIGRATING', 'NOT NEEDED', 'CREATED',
                                                                     'IN BKK'];
-    _file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
-                      'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
-                      'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
-                      'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
+    #_file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
+    #                  'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
+    #                  'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
+    #                  'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
     
-    #_file_counters_keys = ['events', 'physstat']    
+    _file_counters_keys = ['events', 'physstat']    
     
     _file_counters = {} 
     _params = {}
@@ -120,8 +121,24 @@ class Rundbruns(models.Model):
                 yield partition.value
     
     @property
+    def subpartitions_count(self):
+        return utils.bit_count(self.partitionid)
+
+    @property
+    def is_subpartitions_short(self):
+        return self.subpartitions_count < 8
+    
+    @property
     def xsubpartitions(self):
-        return [p.value for p in Rundbruns.all_subpartitions() if p.value not in self.subpartitions] 
+        if self.is_subpartitions_short:
+            xpartitions = int('0xFFFF', 16) ^ self.partitionid
+        else:
+            xpartitions = int('0x7FFF', 16) ^ self.partitionid 
+        for partition in Rundbruns.all_subpartitions():
+            if 0 != (int(partition.key) & xpartitions):
+                yield partition.value            
+    
+        
 
     @property
     def has_files(self):
