@@ -130,22 +130,14 @@ class Rundbruns(models.Model):
     
     @property
     def is_subpartitions_complete(self):
-        if not self.is_subpartitions_short:
-            return (int('0x7FFF', 16) ^ self.partitionid) == 0
-        else:
-            return (int('0xFFFF', 16) ^ self.partitionid) == 0
+        return (0x7FFF ^ (self.partitionid & 0x7FFF)) == 0
     
     @property
     def xsubpartitions(self):
-        if self.is_subpartitions_short:
-            xpartitions = int('0xFFFF', 16) ^ self.partitionid
-        else:
-            xpartitions = int('0x1FFFF', 16) ^ self.partitionid 
+        xpartitions = 0x7FFF ^ (self.partitionid & 0x7FFF)
         for partition in Rundbruns.all_subpartitions():
             if 0 != (int(partition.key) & xpartitions):
                 yield partition.value            
-    
-        
 
     @property
     def has_files(self):
