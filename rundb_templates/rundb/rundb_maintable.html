@@ -41,6 +41,8 @@ $(document).ready(function(){
            {% if run.is_subpartitions_short %} 
             {% for partition in run.subpartitions %}
               {{ partition }}
+            {% empty %}
+            none
             {% endfor %}
            {% else %}
            {% if not run.is_subpartitions_complete %}
