@@ -67,12 +67,14 @@
       <legend>Check pin status</legend>
        {{form.pinned}}
       </fieldset>
-      <fieldset class="span-10 last">
+      <fieldset class="span-22 last">
       <legend>Ouput parameters:</legend>
-      <div class="span-5">Records per page:</div>
-      <div class="span-5 last">Show statistic:</div>
-      <div class="span-5">{{form.onpage}}</div>
-      <div class="span-5 last">{{form.is_show_stat}}</div>
+      <div class="span-16 append-6 last">
+        <div class="span-5">Records per page:</div>
+        <div class="span-11 last">Show statistic: (counts maximum for 100 runs)</div>
+        <div class="span-5">{{form.onpage}}</div>
+        <div class="span-11 last">{{form.is_show_stat}}</div>
+      </div>
       </fieldset>
       <div class="span-23 last"><button type="submit">Search</button></div>
 </div>

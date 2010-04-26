@@ -7,31 +7,11 @@
 {%block content%}
 <br/>
 {% include "rundb/rundb_maintable.html" %}
-<table>
-<thead>
-<tr>
-  <th>nevent_0{% with "Number of ODIN type 0 (physics) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_1{% with "Number of ODIN type 1 (beam-gas) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_2{% with "Number of ODIN type 2 (Lumi) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_3{% with "Number of ODIN type 3 (technical) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_4{% with "Number of ODIN type 4 (auxiliary) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_5{% with "Number of ODIN type 5 (nonZSup) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_6{% with "Number of ODIN type 6 (timing) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>nevent_7{% with "Number of ODIN type 7 (calibration) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-</tr>
-</thead>
-<tr>
-  <td>{{run.file_counters.nevent_0}}</td>
-  <td>{{run.file_counters.nevent_1}}</td>  
-  <td>{{run.file_counters.nevent_2}}</td>
-  <td>{{run.file_counters.nevent_3}}</td>
-  <td>{{run.file_counters.nevent_4}}</td>
-  <td>{{run.file_counters.nevent_5}}</td>
-  <td>{{run.file_counters.nevent_6}}</td>  
-  <td>{{run.file_counters.nevent_7}}</td>
-</tr>
-</table>
-{%with run.file_counters as file%}{% include "rundb/rundb_files_stat.html" %}{%endwith%}
+{% with run.file_counters as file %}
+  {% include "rundb/rundb_files_stat_odin.html" %}
+  {% include "rundb/rundb_files_stat.html" %}
+{%endwith%}
+
 {% if run.params %}
 <table>
 <thead>

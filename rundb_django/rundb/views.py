@@ -47,7 +47,6 @@ def maintable(request):
     if form.is_valid():
         runs = Rundbruns.objects   
 
-
         if form.cleaned_data['runid']:
             runs = runs.filter(runid=form.cleaned_data['runid'])
         else:
@@ -101,11 +100,23 @@ def maintable(request):
                     endtime = datetime.combine(datetime.now(),
                                                 form.cleaned_data['endtime'])
                     runs = runs.filter(endtime__gte=endtime)
+            
+        stat = None
+        if (runs.count() > 0) and form.cleaned_data['is_show_stat'] :
+            stat = {'runs':[], 'counters':None}
+            for run in runs.all().order_by('-runid')[0:100]:
+                stat['runs'].append(run.runid)
+                counters = run.file_counters
+                if not stat['counters']:
+                    stat['counters'] = counters
+                else:
+                    for k in stat['counters'].keys():
+                        stat['counters'][k] += counters[k] 
 
         tpl = loader.get_template('rundb/rundb_maintable.html')
         
         ctx = RequestContext(request,
-                             {'runs': runs.all().
+                             {'stat':stat, 'runs': runs.all().
                             order_by('-runid')[0:form.cleaned_data['onpage']]})
         json = simplejson.dumps(tpl.render(ctx))
     else:
