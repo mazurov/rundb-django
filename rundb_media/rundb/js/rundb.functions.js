@@ -21,12 +21,12 @@ $(document).ready(function() {
 
     $('#rundb-formControl').toggle(
       function(){
-        $('#frmSearch').slideUp();        
+        $('#frmSearch').hide();        
         $('#rundb-formControl-show').show();        
         $('#rundb-formControl-hide').hide();        
       },
       function(){
-        $('#frmSearch').slideDown();        
+        $('#frmSearch').show();        
         $('#rundb-formControl-show').hide();        
         $('#rundb-formControl-hide').show();        
       }
