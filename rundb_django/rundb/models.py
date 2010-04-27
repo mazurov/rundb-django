@@ -287,7 +287,7 @@ class Rundbfiles(models.Model):
         return Rundbfiles._all_states
 
     class Meta:
-        db_table = u'rundbfiles'
+        db_table = u'rundbfilestatistics'
         managed = False
 
 class Rundbfileparams(models.Model):
