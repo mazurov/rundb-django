@@ -44,9 +44,9 @@ $(document).ready(function(){
           <th>RUNTYPE / ACTIVITY</th>
           <th>TCK</th>
           <th>EVENTS{% with "Total number of_events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-          <th>PHYSSTAT{% with "Total number of non-nanoified events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
           <th>STATE / DESTINATION</th>
-          <th>START / END</th>
+          <th>START</th>
+          <th>END</th>
         </tr>
        </thead>
        {% for run in runs %}
@@ -85,10 +85,9 @@ $(document).ready(function(){
         {{run.activity}}</td>
         <td>{{run.tck_hex}}</td>
         <td>{{run.file_counters.events}}</td>
-        <td>{{run.file_counters.physstat}}</td>
-        <td>{{run.state}}<br/>
-        {{run.destination}}</td>
-        <td>{{run.starttime|date:"Y-m-d H:i:s" }}<br/> {{run.endtime|date:"Y-m-d H:i:s" }}</td>
+        <td>{{run.state}}<br/>{{run.destination}}</td>
+        <td>{{run.starttime|date:"Y-m-d H:i:s" }}</td>
+        <td>{{run.endtime|date:"Y-m-d H:i:s" }}</td>
         </tr>
        {% endfor %}
     </table>

@@ -290,6 +290,13 @@ class Rundbfiles(models.Model):
         db_table = u'rundbfilestatistics'
         managed = False
 
+class Rundbfilecounters(models.Model):
+    fileid = models.IntegerField(null=True, blank=True, primary_key=True, unique=True)
+    type = models.IntegerField(null=True, blank=True)
+    value = models.IntegerField(null=True, blank=True)
+    class Meta:
+        db_table = u'rundbfilecounters'
+
 class Rundbfileparams(models.Model):
     file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, unique=True)
     name = models.CharField(unique=True, max_length=32)

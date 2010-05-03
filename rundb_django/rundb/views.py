@@ -8,27 +8,32 @@ from django.contrib.auth.decorators import login_required
 from rundb_django.rundb.models import Rundbruns, Rundbfiles
 from rundb_django.rundb.search_form import SearchForm, ApiForm
 
-
+import pprint
 
 def search_form(request=None):
-    partitions = []
+    nomatter = ('','ANY')
+    partitions = [nomatter]
     for partition in Rundbruns.all_partitions():
-        partitions.append((partition, partition))
+        if partition:
+          partitions.append((partition, partition))
     
-    runtypes = []
+    runtypes = [nomatter]
     for runtype in Rundbruns.all_runtypes():
-        runtypes.append((runtype, runtype))
+        if runtype:
+            runtypes.append((runtype, runtype))
   
-    destinations = []
+    destinations = [nomatter]
     for destination in Rundbruns.all_destinations():
-        destinations.append((destination, destination))
+        if destination:
+            destinations.append((destination, destination))
   
-    activities = []
+    activities = [nomatter]
     for activity in Rundbruns.all_activities():
-        activities.append((activity, activity))
+        if activity:
+            activities.append((activity, activity))
   
     return SearchForm(request.user, partitions, runtypes, destinations,
-                      activities, request.REQUEST) 
+                      activities, request.POST) 
   
 
 def index(request):
@@ -43,29 +48,33 @@ Result for ajax form
 """
 def maintable(request):
     form = search_form(request)
-
     if form.is_valid():
         runs = Rundbruns.objects   
 
-        if form.cleaned_data['runid']:
-            runs = runs.filter(runid=form.cleaned_data['runid'])
+        if form.cleaned_data['runid_min'] and not form.cleaned_data['runid_max']:
+            runs = runs.filter(runid=form.cleaned_data['runid_min'])
         else:
-            if form.cleaned_data['fillid']:
-                runs = runs.filter(fillid=form.cleaned_data['fillid'])
-            if form.cleaned_data['runid_min']:
+            if form.cleaned_data['fillid_min'] and not form.cleaned_data['fillid_max']:
+                runs = runs.filter(fillid=form.cleaned_data['fillid_min'])
+            
+            if form.cleaned_data['runid_min'] and form.cleaned_data['runid_max']:
                 runs = runs.filter(runid__gte=form.cleaned_data['runid_min'])
             if form.cleaned_data['runid_max']:
                 runs = runs.filter(runid__lte=form.cleaned_data['runid_max'])
+            
+            if form.cleaned_data['fillid_min'] and form.cleaned_data['fillid_max']:
+                runs = runs.filter(fillid__gte=form.cleaned_data['fillid_min'])
+                runs = runs.filter(fillid__lte=form.cleaned_data['fillid_max'])
+            
             if form.cleaned_data['partitions']:
-                runs = runs.filter(partitionname__in=
+                runs = runs.filter(partitionname=
                                             form.cleaned_data['partitions'])
             if form.cleaned_data['runtypes']:
-                runs = runs.filter(runtype__in=form.cleaned_data['runtypes'])
+                runs = runs.filter(runtype=form.cleaned_data['runtypes'])
             if form.cleaned_data['destinations']:
-                runs = runs.filter(destination__in=
-                                            form.cleaned_data['destinations'])
+                runs = runs.filter(destination=form.cleaned_data['destinations'])
             if form.cleaned_data['activities']:
-                runs = runs.filter(activity__in=form.cleaned_data['activities'])
+                runs = runs.filter(activity=form.cleaned_data['activities'])
           
             if form.cleaned_data['pinned'] == 1:
                 runs = runs.filter(rundbfiles__refcount__gt=0)

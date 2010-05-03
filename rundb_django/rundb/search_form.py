@@ -1,15 +1,16 @@
 from django import forms
 from django.forms.widgets import RadioSelect
-
+import logging
+import pprint
 class SearchForm(forms.Form):
-    runid = forms.IntegerField(min_value=1, required=False)
-    fillid = forms.IntegerField(min_value=1, required=False)
-    partitions = forms.MultipleChoiceField(required=False)
-    runtypes = forms.MultipleChoiceField(required=False)
-    destinations = forms.MultipleChoiceField(required=False)
-    activities = forms.MultipleChoiceField(required=False)
+    partitions = forms.ChoiceField(required=False,choices=())
+    runtypes = forms.ChoiceField(required=False,choices=())
+    destinations = forms.ChoiceField(required=False,choices=())
+    activities = forms.ChoiceField(required=False,choices=())
     runid_min = forms.IntegerField(min_value=0, required=False)
     runid_max = forms.IntegerField(min_value=0, required=False)
+    fillid_min = forms.IntegerField(min_value=0, required=False)
+    fillid_max = forms.IntegerField(min_value=0, required=False)
     startdate = forms.DateTimeField(('%d.%m.%Y',),
                 widget=forms.DateTimeInput(format='%d.%m.%Y'), required=False)
     enddate = forms.DateTimeField(('%d.%m.%Y',),
@@ -22,16 +23,22 @@ class SearchForm(forms.Form):
                                                                 required=False)
     pinned_user = forms.BooleanField(label='Run contains files pinned by user',
                                                                 required=False)
-    onpage = forms.ChoiceField(choices=[(10, 10), (50, 50), (100, 100),
-                                                        (200, 200)], initial=10)
+    onpage = forms.ChoiceField(choices=((10, 10), (50, 50), (100, 100),
+                                                        (200, 200),), initial='10')
     is_show_stat = forms.BooleanField(label='Show statistic', required=False)
 
     def __init__(self, user, partitions, runtypes, destinations, activities,
-                                                            *args, **kwargs):
-        super(SearchForm, self).__init__(*args, **kwargs)
+                                                            data):
+        if data:
+          super(SearchForm, self).__init__(data)
+        else:
+          super(SearchForm, self).__init__()
+        self.initial = {'partitions':'LHCb'}
         self.fields['partitions'].choices = partitions
-        self.fields['runtypes'].choices = runtypes
+        self.fields['partitions'].initial = 'LHCb'
         self.fields['destinations'].choices = destinations
+        self.fields['destinations'].initial = 'OFFLINE'
+        self.fields['runtypes'].choices = runtypes
         self.fields['activities'].choices = activities
 
         pinned = []
@@ -46,10 +53,10 @@ class SearchForm(forms.Form):
         self.fields['runtypes'].widget.attrs['class'] = 'span-5'
         self.fields['destinations'].widget.attrs['class'] = 'span-5'
         self.fields['activities'].widget.attrs['class'] = 'span-5'
-        self.fields['partitions'].widget.attrs['style'] = 'height:200px'
-        self.fields['runtypes'].widget.attrs['style'] = 'height:200px'
-        self.fields['destinations'].widget.attrs['style'] = 'height:200px'
-        self.fields['activities'].widget.attrs['style'] = 'height:200px'
+        #self.fields['partitions'].widget.attrs['style'] = 'height:200px'
+        #self.fields['runtypes'].widget.attrs['style'] = 'height:200px'
+        #self.fields['destinations'].widget.attrs['style'] = 'height:200px'
+        #self.fields['activities'].widget.attrs['style'] = 'height:200px'
     
         self.fields['startdate'].widget.attrs['title'] = 'dd.mm.yyyy'
         self.fields['starttime'].widget.attrs['title'] = 'hh:mm'
