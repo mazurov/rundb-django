@@ -5,33 +5,7 @@ $(document).ready(function(){
   $(".ss_lightbulb[title]").tooltip();
 });
 </script>
-{% if stat %}
-<fieldset>
-<legend> Statistic: </legend>
-<table>
-<thead>
-<tr>
-  <th>EVENTS{% with "Total number of_events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  <th>PHYSSTAT{% with "Total number of non-nanoified events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
- </tr>
- <tr>
-   <td>{{stat.counters.events}}</td>
-   <td>{{stat.counters.physstat}}</td>
- </tr>
-</thead>
-</table>
-{% with stat.counters as file %}
-  {% include "rundb/rundb_files_stat_odin.html" %}
-  {% include "rundb/rundb_files_stat.html" %}
-{%endwith%}
-<p>
-<b>Runs({{stat.runs|length}}):</b> &nbsp;
-{% for runid in stat.runs %}
-<a href="/rundb/run/{{runid}}">{{runid}}</a> &nbsp; 
-{% endfor %}
-</p>
-</fieldset>
-{% endif %}
+{% include "rundb/rundb_files_stat.html" %}
 {% if runs%}
     <table id="runtable">
        <thead>
@@ -84,7 +58,7 @@ $(document).ready(function(){
         <td>{{run.runtype}}<br/>
         {{run.activity}}</td>
         <td>{{run.tck_hex}}</td>
-        <td>{{run.file_counters.events}}</td>
+        <td>{{run.events}}</td>
         <td>{{run.state}}<br/>{{run.destination}}</td>
         <td>{{run.starttime|date:"Y-m-d H:i:s" }}</td>
         <td>{{run.endtime|date:"Y-m-d H:i:s" }}</td>

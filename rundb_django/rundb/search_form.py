@@ -24,8 +24,9 @@ class SearchForm(forms.Form):
     pinned_user = forms.BooleanField(label='Run contains files pinned by user',
                                                                 required=False)
     onpage = forms.ChoiceField(choices=((10, 10), (50, 50), (100, 100),
-                                                        (200, 200),), initial='10')
-    is_show_stat = forms.BooleanField(label='Show statistic', required=False)
+                                                (200, 200),), initial='10')
+    is_show_stat = forms.BooleanField(label='Show statistic', required=False, 
+                                                                   initial=True)
 
     def __init__(self, user, partitions, runtypes, destinations, activities,
                                                             data):

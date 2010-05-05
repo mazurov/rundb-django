@@ -10,8 +10,11 @@
 # into your database.
 
 from django.db import models
-from rundb_django import utils
+from django.db.models import Sum, Count
+from django.db import connection
 
+from rundb_django import utils
+import logging
 
 class Rundbdictnum(models.Model):
     type = models.CharField(unique=True, max_length=10)
@@ -61,14 +64,6 @@ class Rundbruns(models.Model):
 
     _states = ['', 'ACTIVE', 'ENDED', 'MIGRATING', 'NOT NEEDED', 'CREATED',
                                                                     'IN BKK'];
-    _file_counters_keys = ['events', 'physstat', 'n_physics_inc', 'n_physics_exc',
-                      'n_minbias_inc', 'n_minbias_exc', 'n_lumi_inc',
-                      'n_lumi_exc', 'n_beamgas_inc', 'n_beamgas_exc', 'n_other_inc',
-                      'n_other_exc'] + ['nevent_' + str(x) for x in range(8)]
-    
-    #_file_counters_keys = ['events', 'physstat']    
-    
-    _file_counters = {} 
     _params = {}
     
     def __init__(self, *args, **kwargs): 
@@ -77,14 +72,14 @@ class Rundbruns(models.Model):
                 
     @classmethod
     def all_subpartitions(cls):
-        if 0 == len(Rundbruns._all_subpartitions):
+        if not Rundbruns._all_subpartitions:
             Rundbruns._all_subpartitions = list(
                     Rundbdictnum.objects.filter(type='DET').order_by('value'))
         return Rundbruns._all_subpartitions
     
     @classmethod
     def all_activities(cls):
-        if 0 == len(Rundbruns._all_activities):
+        if not Rundbruns._all_activities:
             for item in Rundbruns.objects.values("activity").distinct().\
                                                     order_by("activity"):
                 Rundbruns._all_activities.append(item['activity'])
@@ -92,7 +87,7 @@ class Rundbruns(models.Model):
     
     @classmethod
     def all_partitions(cls):
-        if 0 == len(Rundbruns._all_partitions):
+        if not Rundbruns._all_partitions:
             for item in Rundbruns.objects.values("partitionname").distinct().\
                                                     order_by("partitionname"):
                 Rundbruns._all_partitions.append(item['partitionname'])
@@ -100,7 +95,7 @@ class Rundbruns(models.Model):
 
     @classmethod
     def all_runtypes(cls):
-        if 0 == len(Rundbruns._all_runtypes):
+        if not Rundbruns._all_runtypes:
             for runtype in Rundbruns.objects.values("runtype").distinct().\
                                                           order_by("runtype"):
                 Rundbruns._all_runtypes.append(runtype['runtype'])
@@ -108,7 +103,7 @@ class Rundbruns(models.Model):
     
     @classmethod
     def all_destinations(cls):
-        if 0 == len(Rundbruns._all_destinations):
+        if not Rundbruns._all_destinations:
             for destination in Rundbruns.objects.values("destination").\
                                           distinct().order_by("destination"):
                 Rundbruns._all_destinations.append(destination['destination'])
@@ -143,24 +138,42 @@ class Rundbruns(models.Model):
     def has_files(self):
         return self.rundbfiles_set.count() > 0
   
-   
+    @property
+    def events(self):
+        return self.rundbfiles_set.filter(stream='FULL').aggregate(
+                            Sum('events')
+                            )['events__sum']
     @property
     def file_counters(self):
-        if not self._file_counters:
-            for key in self._file_counters_keys:
-                self._file_counters.setdefault(key, 0)
-            for file in self.rundbfiles_set.all():
-                if file.stream != 'FULL':
-                    continue
-                for key in self._file_counters_keys:
-                    val = getattr(file, key)
-                    if callable(val):
-                        val = val()
-                    if val:
-                        self._file_counters[key] += int(val) 
-        return self._file_counters        
-    
-  
+        return Rundbruns.file_counters_stat(self)
+
+    @classmethod
+    def file_counters_stat(cls,runs):
+        result = [[-10,'EVENTS',0,'Number of events']]
+        if not runs:
+            return []
+        args = []
+        if not isinstance(runs,Rundbruns):
+            (sql_clause,args) = runs._as_sql()
+            cursor = connection.cursor();
+            cursor.execute('SELECT SUM(events) FROM Rundbfiles'
+                ' WHERE runid in (%s)' % sql_clause,args)
+            (events,) = cursor.fetchone() 
+            result[0][2] = events
+            runs_clause = ' in (%s)' % sql_clause
+        else:
+            result[0][2] = runs.events
+            runs_clause = '=%d' % runs.runid
+        
+        cursor = connection.cursor()
+        cursor.execute('SELECT fc.type, d.value , SUM(fc.VALUE), d.description'
+            ' FROM RUNDBFILECOUNTERS fc, RUNDBDICTNUM d, RUNDBFILES f WHERE'
+            " fc.fileid=f.fileid AND d.key=fc.type and d.type='FCOUNT'"
+            " AND f.runid %s AND f.stream='FULL'"
+            " GROUP BY fc.type,d.value, d.description ORDER BY fc.TYPE" 
+                % runs_clause,args)
+        result += cursor.fetchall()
+        return result
 
     @property
     def state(self):
@@ -185,7 +198,8 @@ class Rundbruns(models.Model):
         managed = False
 
 class Rundbrunparams(models.Model):
-    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True, unique=True)    
+    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True, 
+                                                                    unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
@@ -206,36 +220,18 @@ class Rundbfiles(models.Model):
     timestamp = models.DateField(null=True, blank=True)
     refowner = models.CharField(max_length=32, blank=True)
     refdate = models.DateField(null=True, blank=True, auto_now=True)
-    nevent_0 = models.IntegerField(null=True, blank=True)
-    nevent_1 = models.IntegerField(null=True, blank=True)
-    nevent_2 = models.IntegerField(null=True, blank=True)
-    nevent_3 = models.IntegerField(null=True, blank=True)
-    nevent_4 = models.IntegerField(null=True, blank=True)
-    nevent_5 = models.IntegerField(null=True, blank=True)
-    nevent_6 = models.IntegerField(null=True, blank=True)
-    nevent_7 = models.IntegerField(null=True, blank=True)
-    n_physics_inc = models.IntegerField(null=True, blank=True)
-    n_physics_exc = models.IntegerField(null=True, blank=True)
-    n_minbias_inc = models.IntegerField(null=True, blank=True)
-    n_minbias_exc = models.IntegerField(null=True, blank=True)
-    n_lumi_inc = models.IntegerField(null=True, blank=True)
-    n_lumi_exc = models.IntegerField(null=True, blank=True)
-    n_beamgas_inc = models.IntegerField(null=True, blank=True)
-    n_beamgas_exc = models.IntegerField(null=True, blank=True)
-    n_other_inc = models.IntegerField(null=True, blank=True)
-    n_other_exc = models.IntegerField(null=True, blank=True)
 
     _all_states = None
     _state = None
     _params = None
 
     def state(self):
-        if None == self._state:
+        if not self._state:
             for state in Rundbfiles.all_states():
                 if state.key == self.stateid:
                     self._state = state.value
       
-        if None == self._state:
+        if not self._state:
             self._state = 'UNDEFINED'
         return self._state
 
@@ -254,7 +250,8 @@ class Rundbfiles(models.Model):
 
     def castor(self):
         if self.run.destination == 'OFFLINE' and self.directory():
-            return self.directory().replace('/daqarea', '/castor/cern.ch/grid') + "/" + self.name
+            return self.directory().replace('/daqarea', 
+                                    '/castor/cern.ch/grid') + "/" + self.name
         return None
 
     def has_nevents(self):
@@ -283,22 +280,34 @@ class Rundbfiles(models.Model):
     @classmethod
     def all_states(cls):
         if None == Rundbfiles._all_states:
-            Rundbfiles._all_states = list(Rundbdictnum.objects.filter(type='FSTATE').order_by('value'))
+            Rundbfiles._all_states = list(
+                Rundbdictnum.objects.filter(type='FSTATE').order_by('value'))
         return Rundbfiles._all_states
 
     class Meta:
-        db_table = u'rundbfilestatistics'
+        db_table = u'rundbfiles'
         managed = False
 
 class Rundbfilecounters(models.Model):
-    fileid = models.IntegerField(null=True, blank=True, primary_key=True, unique=True)
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, 
+                                                                    unique=True)
     type = models.IntegerField(null=True, blank=True)
     value = models.IntegerField(null=True, blank=True)
+    _counter = None
+    
+    @property
+    def counter(self):
+        if not self._counter:
+            self._counter = Rundbdictnum.objects.filter(type='FCOUNT').filter(
+                                                        key=self.type).all()[0]
+        return self._counter
+      
     class Meta:
         db_table = u'rundbfilecounters'
 
 class Rundbfileparams(models.Model):
-    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, unique=True)
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, 
+                                                                    unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
@@ -309,7 +318,8 @@ class Rundbfileparams(models.Model):
 class Rundbdatamover(models.Model):
     id = models.CharField(max_length=50, blank=True, unique=True)
     type = models.CharField(max_length=10, blank=True, unique=True)
-    time = models.DateTimeField(null=True, blank=True, auto_now=True, primary_key=True)
+    time = models.DateTimeField(null=True, blank=True, auto_now=True, 
+                                                            primary_key=True)
     message = models.CharField(max_length=255, blank=True)
     trials = models.IntegerField(null=True, blank=True)
     

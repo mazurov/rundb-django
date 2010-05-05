@@ -9,6 +9,7 @@ from rundb_django.rundb.models import Rundbruns, Rundbfiles
 from rundb_django.rundb.search_form import SearchForm, ApiForm
 
 import pprint
+import logging
 
 def search_form(request=None):
     nomatter = ('','ANY')
@@ -49,20 +50,25 @@ Result for ajax form
 def maintable(request):
     form = search_form(request)
     if form.is_valid():
-        runs = Rundbruns.objects   
+        runs = Rundbruns.objects
+        runs.annotate(files_count=Count('rundbfiles'))
 
-        if form.cleaned_data['runid_min'] and not form.cleaned_data['runid_max']:
+        if form.cleaned_data['runid_min'] and \
+                                             not form.cleaned_data['runid_max']:
             runs = runs.filter(runid=form.cleaned_data['runid_min'])
         else:
-            if form.cleaned_data['fillid_min'] and not form.cleaned_data['fillid_max']:
+            if form.cleaned_data['fillid_min'] and \
+                                            not form.cleaned_data['fillid_max']:
                 runs = runs.filter(fillid=form.cleaned_data['fillid_min'])
             
-            if form.cleaned_data['runid_min'] and form.cleaned_data['runid_max']:
+            if form.cleaned_data['runid_min'] and \
+                                                form.cleaned_data['runid_max']:
                 runs = runs.filter(runid__gte=form.cleaned_data['runid_min'])
             if form.cleaned_data['runid_max']:
                 runs = runs.filter(runid__lte=form.cleaned_data['runid_max'])
             
-            if form.cleaned_data['fillid_min'] and form.cleaned_data['fillid_max']:
+            if form.cleaned_data['fillid_min'] and \
+                                                form.cleaned_data['fillid_max']:
                 runs = runs.filter(fillid__gte=form.cleaned_data['fillid_min'])
                 runs = runs.filter(fillid__lte=form.cleaned_data['fillid_max'])
             
@@ -72,7 +78,9 @@ def maintable(request):
             if form.cleaned_data['runtypes']:
                 runs = runs.filter(runtype=form.cleaned_data['runtypes'])
             if form.cleaned_data['destinations']:
-                runs = runs.filter(destination=form.cleaned_data['destinations'])
+                runs = runs.filter(
+                                  destination=form.cleaned_data['destinations']
+                                   )
             if form.cleaned_data['activities']:
                 runs = runs.filter(activity=form.cleaned_data['activities'])
           
@@ -110,22 +118,14 @@ def maintable(request):
                                                 form.cleaned_data['endtime'])
                     runs = runs.filter(endtime__gte=endtime)
             
-        stat = None
-        if (runs.count() > 0) and form.cleaned_data['is_show_stat'] :
-            stat = {'runs':[], 'counters':None}
-            for run in runs.all().order_by('-runid')[0:100]:
-                stat['runs'].append(run.runid)
-                counters = run.file_counters
-                if not stat['counters']:
-                    stat['counters'] = counters
-                else:
-                    for k in stat['counters'].keys():
-                        stat['counters'][k] += counters[k] 
+        counters = None
+        if form.cleaned_data['is_show_stat'] :
+            counters = Rundbruns.file_counters_stat(runs.all())
 
         tpl = loader.get_template('rundb/rundb_maintable.html')
         
         ctx = RequestContext(request,
-                             {'stat':stat, 'runs': runs.all().
+                             {'counters':counters,'runs': runs.all().
                             order_by('-runid')[0:form.cleaned_data['onpage']]})
         json = simplejson.dumps(tpl.render(ctx))
     else:
@@ -153,9 +153,9 @@ def files(request, runid, page=1):
                                                         onpage:page * onpage]}
     if run.rundbfiles_set.count() > page * onpage:
         context['next'] = page + 1
-    #--------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------
     ctx = RequestContext(request, context)
-    #--------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------
     return HttpResponse(simplejson.dumps(tpl.render(ctx)),
                                                 mimetype='application/json');
 

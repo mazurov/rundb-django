@@ -7,10 +7,10 @@
 {%block content%}
 <br/>
 {% include "rundb/rundb_maintable.html" %}
-{% with run.file_counters as file %}
-  {% include "rundb/rundb_files_stat_odin.html" %}
-  {% include "rundb/rundb_files_stat.html" %}
-{%endwith%}
+{% with  run.file_counters as counters%}
+{% include "rundb/rundb_files_stat.html" %}
+{% endwith %}
+{% include "rundb/rundb_files_stat_odin.html" %}
 
 {% if run.params %}
 <table>

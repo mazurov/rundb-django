@@ -1,28 +1,12 @@
+{% if counters %}
 <table>
-<thead>
-  <tr>
-    <th>&nbsp;</th>
-    <th>Physics{% with "Number of HLT1 physics (bits 11 and 46) accepted events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-    <th>Lumi{% with "Number of luminosity (bit 33) accepted events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-    <th>MinBias{% with "Number of minimum bias (bit 47) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-    <th>BeamGas{% with "Number of beam gas (bit 49) events in FULL stream" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-    <th>Other{% with "Number of events not in any of the other 4 categories" as tooltip%}{%include "tooltip.inc.html"%}{%endwith%}</th>
-  </tr>
-</thead>  
-  <tr>
-    <th>Inclusive:</th>
-    <td>{{file.n_physics_inc}}</td>
-    <td>{{file.n_lumi_inc}}</td>    
-    <td>{{file.n_minbias_inc}}</td>
-    <td>{{file.n_beamgas_inc}}</td>
-    <td>{{file.n_other_inc}}</td>
-  </tr>
-  <tr>
-    <th>Exclusive:</th>
-    <td>{{file.n_physics_exc}}</td>
-    <td>{{file.n_lumi_exc}}</td>    
-    <td>{{file.n_minbias_exc}}</td>
-    <td>{{file.n_beamgas_exc}}</td>
-    <td>{{file.n_other_exc}}</td>
-  </tr>  
+<caption>Counters summary for files from FULL stream</caption>
+{% for counter in counters %}
+<tr class="{%cycle "even" "odd"%}">
+  <td><b>{{counter.1}}</b></td>
+  <td>{{counter.2}}</td>
+  <td>{{counter.3}}</td>
+<tr>
+{%endfor%}
 </table>
+{% endif %}

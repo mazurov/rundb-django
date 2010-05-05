@@ -7,7 +7,15 @@
 {%block content%}
 <br/>
 {% include "rundb/rundb_files_table.inc.html" %}
-{% include "rundb/rundb_files_stat.html" %}
+<table>
+{%for c in file.rundbfilecounters_set.all%}
+<tr class="{% cycle 'even' 'odd' %}">
+  <td><b>{{c.counter.value}}</b></td>
+  <td>{{c.value}}</td>
+  <td>({{c.counter.description}})</td>
+</tr>
+{%endfor%}
+</table>
 <table>
 <thead>
 <tr>
@@ -35,4 +43,6 @@
 </ul>
 </td></tr>
 </table>
+
 {%endblock%}
+
