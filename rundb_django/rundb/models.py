@@ -277,6 +277,13 @@ class Rundbfiles(models.Model):
     def shortlog(self):
         return self.log()[0:10]
 
+    @property
+    def file_counters(self):
+        result = []
+        for counter in self.rundbfilecounters_set.all():
+            result.append((counter.type,counter.counter.key,counter.value,
+                                                counter.counter.description))
+        return result
     @classmethod
     def all_states(cls):
         if None == Rundbfiles._all_states:

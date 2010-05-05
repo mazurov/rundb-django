@@ -1,11 +1,12 @@
 {% if counters %}
-<table>
+<table style="width:30%;">
+{%if not file%}
 <caption>Counters summary for files from FULL stream</caption>
+{%endif%}
 {% for counter in counters %}
 <tr class="{%cycle "even" "odd"%}">
-  <td><b>{{counter.1}}</b></td>
-  <td>{{counter.2}}</td>
-  <td>{{counter.3}}</td>
+  <td><b>{{counter.3}}</b></td>
+  <td style="text-align: right">{{counter.2}}</td>
 <tr>
 {%endfor%}
 </table>
