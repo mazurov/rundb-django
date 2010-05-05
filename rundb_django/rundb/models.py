@@ -311,6 +311,7 @@ class Rundbfilecounters(models.Model):
         return self._counter
       
     class Meta:
+        ordering = ['type']
         db_table = u'rundbfilecounters'
 
 class Rundbfileparams(models.Model):
@@ -320,7 +321,6 @@ class Rundbfileparams(models.Model):
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
     class Meta:
-        ordering = ['type']
         db_table = u'rundbfileparams'
         managed = False
 
