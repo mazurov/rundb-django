@@ -24,6 +24,7 @@ class Rundbdictnum(models.Model):
     description = models.CharField(max_length=256, blank=True)
     class Meta:
         db_table = u'rundbdictnum'
+        ordering = ['type']
         managed = False
 
 class Rundbruns(models.Model):
@@ -319,6 +320,7 @@ class Rundbfileparams(models.Model):
     value = models.CharField(max_length=255, blank=True)
     type = models.CharField(max_length=32)
     class Meta:
+        ordering = ['type']
         db_table = u'rundbfileparams'
         managed = False
 
