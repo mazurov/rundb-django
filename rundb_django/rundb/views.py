@@ -13,26 +13,15 @@ import logging
 
 def search_form(request=None):
     nomatter = ('', 'ANY')
-    partitions = [nomatter]
-    for partition in Rundbruns.all_partitions():
-        if partition:
-          partitions.append((partition, partition))
-    
-    runtypes = [nomatter]
-    for runtype in Rundbruns.all_runtypes():
-        if runtype:
-            runtypes.append((runtype, runtype))
+    partitions = [nomatter] + [(partition, partition) for partition in 
+                                                Rundbruns.all_partitions() if  partition]
+    runtypes = [nomatter] + [(runtype, runtype) for runtype in 
+                                                Rundbruns.all_runtypes() if runtype]
   
-    destinations = [nomatter]
-    for destination in Rundbruns.all_destinations():
-        if destination:
-            destinations.append((destination, destination))
-  
-    activities = [nomatter]
-    for activity in Rundbruns.all_activities():
-        if activity:
-            activities.append((activity, activity))
-  
+    destinations = [nomatter] + [(destination, destination) for destination in 
+                                                Rundbruns.all_destinations() if destination]
+    activities = [nomatter] + [(activity, activity) for activity in 
+                                                    Rundbruns.all_activities() if activity]
     return SearchForm(request.user, partitions, runtypes, destinations,
                       activities, request.POST) 
   
@@ -71,6 +60,7 @@ def maintable(request):
                                                 form.cleaned_data['fillid_max']:
                 runs = runs.filter(fillid__gte=form.cleaned_data['fillid_min'])
                 runs = runs.filter(fillid__lte=form.cleaned_data['fillid_max'])
+                
             
             if form.cleaned_data['partitions']:
                 runs = runs.filter(partitionname=
@@ -83,6 +73,12 @@ def maintable(request):
                                    )
             if form.cleaned_data['activities']:
                 runs = runs.filter(activity=form.cleaned_data['activities'])
+
+            if form.cleaned_data['beamenergy']:
+                runs = runs.filter(
+                        beamenergy__gte=form.cleaned_data['beamenergy'] - 1)                
+                runs = runs.filter(
+                        beamenergy__lte=form.cleaned_data['beamenergy'] + 1)
           
             if form.cleaned_data['pinned'] == 1:
                 runs = runs.filter(rundbfiles__refcount__gt=0)

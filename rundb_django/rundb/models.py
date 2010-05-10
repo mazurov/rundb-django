@@ -33,15 +33,10 @@ class Rundbruns(models.Model):
     partitionid = models.IntegerField()
     starttime = models.DateTimeField(null=True, blank=True)
     endtime = models.DateTimeField(null=True, blank=True)
-    startlumi = models.DecimalField(null=True, max_digits=63,
-                                                decimal_places= -127,
-                                                blank=True)
-    endlumi = models.DecimalField(null=True, max_digits=63,
-                                  decimal_places= -127, blank=True)
+    startlumi = models.FloatField(null=True, blank=True)
+    endlumi = models.FloatField(null=True, blank=True)
     _state = models.IntegerField(null=True, blank=True, db_column='state')
-    beamenergy = models.DecimalField(null=True, max_digits=126,
-                                                decimal_places= -127,
-                                                blank=True)
+    beamenergy = models.FloatField(null=True, blank=True)
     runtype = models.CharField(max_length=255, blank=True)
     partitionname = models.CharField(max_length=16, blank=True)
     destination_old = models.IntegerField(null=True, blank=True)
@@ -85,6 +80,7 @@ class Rundbruns(models.Model):
                                                     order_by("activity"):
                 Rundbruns._all_activities.append(item['activity'])
         return Rundbruns._all_activities
+    
     
     @classmethod
     def all_partitions(cls):

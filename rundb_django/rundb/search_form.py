@@ -11,6 +11,7 @@ class SearchForm(forms.Form):
                             ('Closed', 'CLOSED')), required=False)
     magnet_state = forms.ChoiceField(required=False, choices=(('', 'ANY'),
                             ('OFF', 'OFF'), ('UP', 'UP'), ('DOWN', 'DOWN')))
+    beamenergy = forms.FloatField(required=False)    
     runid_min = forms.IntegerField(min_value=0, required=False)
     runid_max = forms.IntegerField(min_value=0, required=False)
     fillid_min = forms.IntegerField(min_value=0, required=False)
@@ -33,7 +34,7 @@ class SearchForm(forms.Form):
                                                                    initial=True)
 
     def __init__(self, user, partitions, runtypes, destinations, activities,
-                                                            data):
+                  data):
         if data:
           super(SearchForm, self).__init__(data)
         else:
