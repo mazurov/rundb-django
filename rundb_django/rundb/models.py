@@ -149,16 +149,16 @@ class Rundbruns(models.Model):
         return Rundbruns.file_counters_stat(self)
 
     @classmethod
-    def file_counters_stat(cls,runs):
-        result = [[-10,'EVENTS',0,'Number of events']]
+    def file_counters_stat(cls, runs):
+        result = [[-10, 'EVENTS', 0, 'Number of events']]
         if not runs:
             return []
         args = []
-        if not isinstance(runs,Rundbruns):
-            (sql_clause,args) = runs._as_sql()
+        if not isinstance(runs, Rundbruns):
+            (sql_clause, args) = runs._as_sql()
             cursor = connection.cursor();
             cursor.execute('SELECT SUM(events) FROM Rundbfiles'
-                ' WHERE runid in (%s)' % sql_clause,args)
+                ' WHERE runid in (%s)' % sql_clause, args)
             (events,) = cursor.fetchone() 
             result[0][2] = events
             runs_clause = ' in (%s)' % sql_clause
@@ -172,7 +172,7 @@ class Rundbruns(models.Model):
             " fc.fileid=f.fileid AND d.key=fc.type and d.type='FCOUNT'"
             " AND f.runid %s AND f.stream='FULL'"
             " GROUP BY fc.type,d.value, d.description ORDER BY fc.TYPE" 
-                % runs_clause,args)
+                % runs_clause, args)
         result += cursor.fetchall()
         return result
 
@@ -199,7 +199,7 @@ class Rundbruns(models.Model):
         managed = False
 
 class Rundbrunparams(models.Model):
-    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True, 
+    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True,
                                                                     unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
@@ -251,7 +251,7 @@ class Rundbfiles(models.Model):
 
     def castor(self):
         if self.run.destination == 'OFFLINE' and self.directory():
-            return self.directory().replace('/daqarea', 
+            return self.directory().replace('/daqarea',
                                     '/castor/cern.ch/grid') + "/" + self.name
         return None
 
@@ -282,7 +282,7 @@ class Rundbfiles(models.Model):
     def file_counters(self):
         result = []
         for counter in self.rundbfilecounters_set.all():
-            result.append((counter.type,counter.counter.key,counter.value,
+            result.append((counter.type, counter.counter.key, counter.value,
                                                 counter.counter.description))
         return result
     @classmethod
@@ -297,7 +297,7 @@ class Rundbfiles(models.Model):
         managed = False
 
 class Rundbfilecounters(models.Model):
-    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, 
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True,
                                                                     unique=True)
     type = models.IntegerField(null=True, blank=True)
     value = models.IntegerField(null=True, blank=True)
@@ -315,7 +315,7 @@ class Rundbfilecounters(models.Model):
         db_table = u'rundbfilecounters'
 
 class Rundbfileparams(models.Model):
-    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, 
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True,
                                                                     unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
@@ -327,7 +327,7 @@ class Rundbfileparams(models.Model):
 class Rundbdatamover(models.Model):
     id = models.CharField(max_length=50, blank=True, unique=True)
     type = models.CharField(max_length=10, blank=True, unique=True)
-    time = models.DateTimeField(null=True, blank=True, auto_now=True, 
+    time = models.DateTimeField(null=True, blank=True, auto_now=True,
                                                             primary_key=True)
     message = models.CharField(max_length=255, blank=True)
     trials = models.IntegerField(null=True, blank=True)

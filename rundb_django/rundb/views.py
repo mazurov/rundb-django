@@ -12,7 +12,7 @@ import pprint
 import logging
 
 def search_form(request=None):
-    nomatter = ('','ANY')
+    nomatter = ('', 'ANY')
     partitions = [nomatter]
     for partition in Rundbruns.all_partitions():
         if partition:
@@ -118,6 +118,17 @@ def maintable(request):
                                                 form.cleaned_data['endtime'])
                     runs = runs.filter(endtime__gte=endtime)
             
+            if form.cleaned_data['velo_position']:
+                runs = runs.filter(rundbrunparams__name='veloPosition',
+                  rundbrunparams__value__iregex=
+                                            form.cleaned_data['velo_position'])
+            
+            if form.cleaned_data['magnet_state']:
+                runs = runs.filter(rundbrunparams__name='magnetState',
+                  rundbrunparams__value__iregex=
+                                            form.cleaned_data['magnet_state'])
+
+            
         counters = None
         if form.cleaned_data['is_show_stat'] :
             counters = Rundbruns.file_counters_stat(runs.all())
@@ -125,7 +136,7 @@ def maintable(request):
         tpl = loader.get_template('rundb/rundb_maintable.html')
         
         ctx = RequestContext(request,
-                             {'counters':counters,'runs': runs.all().
+                             {'counters':counters, 'runs': runs.all().
                             order_by('-runid')[0:form.cleaned_data['onpage']]})
         json = simplejson.dumps(tpl.render(ctx))
     else:

@@ -3,10 +3,14 @@ from django.forms.widgets import RadioSelect
 import logging
 import pprint
 class SearchForm(forms.Form):
-    partitions = forms.ChoiceField(required=False,choices=())
-    runtypes = forms.ChoiceField(required=False,choices=())
-    destinations = forms.ChoiceField(required=False,choices=())
-    activities = forms.ChoiceField(required=False,choices=())
+    partitions = forms.ChoiceField(required=False, choices=())
+    runtypes = forms.ChoiceField(required=False, choices=())
+    destinations = forms.ChoiceField(required=False, choices=())
+    activities = forms.ChoiceField(required=False, choices=())
+    velo_position = forms.ChoiceField(choices=(('', 'ANY'), ('OPEN', 'OPEN'),
+                            ('Closed', 'CLOSED')), required=False)
+    magnet_state = forms.ChoiceField(required=False, choices=(('', 'ANY'),
+                            ('OFF', 'OFF'), ('UP', 'UP'), ('DOWN', 'DOWN')))
     runid_min = forms.IntegerField(min_value=0, required=False)
     runid_max = forms.IntegerField(min_value=0, required=False)
     fillid_min = forms.IntegerField(min_value=0, required=False)
@@ -25,7 +29,7 @@ class SearchForm(forms.Form):
                                                                 required=False)
     onpage = forms.ChoiceField(choices=((10, 10), (50, 50), (100, 100),
                                                 (200, 200),), initial='10')
-    is_show_stat = forms.BooleanField(label='Show statistic', required=False, 
+    is_show_stat = forms.BooleanField(label='Show statistic', required=False,
                                                                    initial=True)
 
     def __init__(self, user, partitions, runtypes, destinations, activities,
