@@ -22,7 +22,9 @@ urlpatterns = patterns('',
     
     (r'^$', "rundb_django.rundb.views.index"),
     (r'^rundb/$', "rundb_django.rundb.views.redirect"),
-    
+    (r'^rundb/search$', "rundb_django.rundb.views.search"),
+    (r'^rundb/fills$', "rundb_django.rundb.views.fills"),
+    (r'^rundb/fill/(?P<fillid>\d+)/$', "rundb_django.rundb.views.fill"),
     (r'^rundb/run/(?P<runid>\d+)/$', "rundb_django.rundb.views.run"),
     (r'^rundb/maintable$', "rundb_django.rundb.views.maintable"),
     (r'^rundb/file/(?P<fileid>\d+)/$', "rundb_django.rundb.views.file"),

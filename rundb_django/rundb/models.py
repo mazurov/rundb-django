@@ -16,6 +16,49 @@ from django.db import connection
 from rundb_django import utils
 import logging
 
+
+class Rundbfills(models.Model):
+    fill_id = models.IntegerField(primary_key=True)
+    timestamp = models.DateTimeField(null=True, blank=True)
+    time_total = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_hvon = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_veloin = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_running = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_logged = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_total = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_hvon = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_veloin = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_running = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_logged = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    
+    @property
+    def inefficiency(self):
+        return (1 - self.lumi_logged / self.lumi_total) * 100
+    
+    @property
+    def delivered(self):
+        return 100 - self.inefficiency
+    
+    @property
+    def hvon_lost(self):
+        return (1 - self.lumi_hvon / self.lumi_total) * 100
+    
+    @property
+    def veloin_lost(self):
+        return (1 - self.lumi_veloin / self.lumi_hvon) * 100
+    
+    @property
+    def running_lost(self):    
+        return (1 - self.lumi_running / self.lumi_veloin) * 100
+    
+    @property
+    def ontape_lost(self):    
+        return (1 - self.lumi_logged / self.lumi_running) * 100
+    
+    
+    class Meta:
+        db_table = u'rundbfills'
+
 class Rundbdictnum(models.Model):
     type = models.CharField(unique=True, max_length=10)
     key = models.DecimalField(primary_key=True, unique=True, max_digits=0,

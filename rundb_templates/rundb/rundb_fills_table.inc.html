@@ -1,0 +1,27 @@
+<table>
+<thead>
+  <tr>
+    <th></th>
+    <th>Fill id</th>
+    <th>Date</th>
+    <th>Stable Beam duration</th>
+    <th>Delivered lumi</th>
+    <th>Stored lumi</th>
+    <th>Inefficienty</th>
+  </tr>
+</thead>
+{% for fill in fills %}
+  <tr>
+    <td>{% if not single %}
+         <a href="/rundb/fill/{{fill.fill_id}}/"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
+         {%endif%}
+     </td>
+    <td>{{fill.fill_id}}</td>
+    <td>{{fill.timestamp}}</td>
+    <td>{{fill.time_total}}</td>
+    <td>{{fill.lumi_total}}</td>
+    <td>{{fill.lumi_logged}}</td>
+    <td>{{fill.inefficiency}}</td>
+  </tr>
+{% endfor %}
+</table>

@@ -1,0 +1,46 @@
+{%extends "base.html"%}
+{%block head_javascript%}
+
+{%endblock%}
+{%block title_head%}Fill {{fill.fillid}}{%endblock%}
+{%block title%}Fills{%endblock%}
+{%block top%}
+
+{%endblock%}
+
+{%block content%}
+{% include "rundb/rundb_fills_table.inc.html" %}
+
+<table style="width:30%">
+<tr class="odd">
+  <td><b>DELIVERED:</b></td>
+  <td>{{fill.lumi_total}}</td>
+  <td>logged {{fill.lumi_logged}}</td>
+  <td> {{fill.delivered}} %</td>
+</tr>
+<tr class="even"> 
+  <td><b>HV ON:</b></td>
+  <td>{{fill.lumi_hvon}}</td>
+  <td>lost</td>
+  <td>{{fill.hvon_lost}} %</td>
+</tr>
+<tr class="odd">
+  <td><b>VELO IN:</b></td>
+  <td>{{fill.lumi_veloin}}</td>
+  <td>lost</td>
+  <td>{{fill.veloin_lost}} %</td>
+</tr>
+<tr class="even">
+  <td><b>RUNNING:</b></td>
+  <td>{{fill.lumi_running}}</td>
+  <td>lost</td>
+  <td>{{fill.running_lost}} % </td>
+</tr>
+<tr class="odd">
+  <td><b>ON TAPE:</b></td>
+  <td>{{fill.lumi_logged}}</td>
+  <td>lost</td>
+  <td>{{fill.ontape_lost}} %</td>
+</td>
+</table> 
+{%endblock%}

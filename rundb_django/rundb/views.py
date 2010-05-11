@@ -5,7 +5,7 @@ from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
-from rundb_django.rundb.models import Rundbruns, Rundbfiles
+from rundb_django.rundb.models import Rundbruns, Rundbfiles, Rundbfills
 from rundb_django.rundb.search_form import SearchForm, ApiForm
 
 import pprint
@@ -31,8 +31,23 @@ def search_form(request=None):
   
 
 def index(request):
-    return render_to_response('rundb/rundb_index.html',
+    return search(request)
+
+def search(request):
+    return render_to_response('rundb/rundb_search.html',
       {'form':search_form(request)}, context_instance=RequestContext(request))
+
+def fills(request):
+    fills = Rundbfills.objects.filter(time_total__gt=0).all().\
+                                                        order_by('timestamp')
+    return render_to_response('rundb/rundb_fills.html',
+      {'fills':fills}, context_instance=RequestContext(request))
+    
+def fill(request, fillid):
+    fill = get_object_or_404(Rundbfills, pk=fillid)
+    return render_to_response('rundb/rundb_fill.html',
+      {'fill':fill, 'fills':[fill], 'single':True}, context_instance=RequestContext(request))
+
 
 def redirect(request):
     return HttpResponseRedirect("/")
