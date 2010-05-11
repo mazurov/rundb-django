@@ -34,7 +34,7 @@ $(document).ready(function(){
          {%endif%}
         </td>
         <td>{{run.runid}}</td>
-        <td>{{run.fillid}}</td>
+        <td>{%if run.fill%}<a href="/rundb/fill/{{run.fill.fill_id}}">{%endif%}{{run.fillid}}{% if run.fill%}</a>{% endif %}</td>
         <td>{{ run.rundbfiles_set.count }}</td>
         <td>{{ run.partitionname }}: 
            {% if run.is_subpartitions_short %} 

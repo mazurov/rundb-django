@@ -35,7 +35,6 @@ class Rundbfills(models.Model):
     def inefficiency(self):
         return round(100 * (1 - self.lumi_logged / self.lumi_total), 2)
     
-    
     @property
     def delivered(self):
         return 100 - self.inefficiency
@@ -73,6 +72,7 @@ class Rundbdictnum(models.Model):
 class Rundbruns(models.Model):
     runid = models.IntegerField(unique=True, primary_key=True)
     fillid = models.IntegerField()
+    fill = models.ForeignKey(Rundbfills, db_column='fillid')    
     partitionid = models.IntegerField()
     starttime = models.DateTimeField(null=True, blank=True)
     endtime = models.DateTimeField(null=True, blank=True)
