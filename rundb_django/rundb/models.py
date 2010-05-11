@@ -154,7 +154,7 @@ class Rundbruns(models.Model):
             (sql_clause, args) = runs._as_sql()
             cursor = connection.cursor();
             cursor.execute('SELECT SUM(events) FROM Rundbfiles'
-                ' WHERE runid in (%s)' % sql_clause, args)
+                ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
             (events,) = cursor.fetchone() 
             result[0][2] = events
             runs_clause = ' in (%s)' % sql_clause
