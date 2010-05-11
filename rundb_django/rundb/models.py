@@ -35,6 +35,7 @@ class Rundbfills(models.Model):
     def inefficiency(self):
         return int(round(100 * (1 - self.lumi_logged / self.lumi_total)))
     
+    
     @property
     def delivered(self):
         return 100 - self.inefficiency
