@@ -39,7 +39,7 @@ def search(request):
 
 def fills(request):
     fills = Rundbfills.objects.filter(time_total__gt=0).all().\
-                                                        order_by('timestamp')
+                                                order_by('-timestamp')[:20]
     return render_to_response('rundb/rundb_fills.html',
       {'fills':fills}, context_instance=RequestContext(request))
     
