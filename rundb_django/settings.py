@@ -4,7 +4,7 @@ import os
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 configs = {
-    '/home/mazurov/Projects/RunDb/rundb_django': 'production',
+    '/home/mazurov/workspace/run_db/rundb_django': 'production',
     '/opt/lampp/vhosts/rundb/rundb_django': 'production',
 }
 

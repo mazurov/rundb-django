@@ -16,6 +16,49 @@ from django.db import connection
 from rundb_django import utils
 import logging
 
+
+class Rundbfills(models.Model):
+    fill_id = models.IntegerField(primary_key=True)
+    timestamp = models.DateTimeField(null=True, blank=True)
+    time_total = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_hvon = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_veloin = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_running = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_logged = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_total = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_hvon = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_veloin = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_running = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    lumi_logged = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    
+    @property
+    def inefficiency(self):
+        return round(100 * (1 - self.lumi_logged / self.lumi_total), 2)
+    
+    
+    @property
+    def delivered(self):
+        return 100 - self.inefficiency
+    
+    @property
+    def hvon_lost(self):
+        return round(100 * (1 - self.lumi_hvon / self.lumi_total), 2)
+    
+    @property
+    def veloin_lost(self):
+        return round(100 * (1 - self.lumi_veloin / self.lumi_hvon), 2)
+    
+    @property
+    def running_lost(self):    
+        return round(100 * (1 - self.lumi_running / self.lumi_veloin), 2)
+    
+    @property
+    def ontape_lost(self):    
+        return round(100 * (1 - self.lumi_logged / self.lumi_running), 2)
+
+    class Meta:
+        db_table = u'rundbfills'
+
 class Rundbdictnum(models.Model):
     type = models.CharField(unique=True, max_length=10)
     key = models.DecimalField(primary_key=True, unique=True, max_digits=0,
@@ -33,15 +76,10 @@ class Rundbruns(models.Model):
     partitionid = models.IntegerField()
     starttime = models.DateTimeField(null=True, blank=True)
     endtime = models.DateTimeField(null=True, blank=True)
-    startlumi = models.DecimalField(null=True, max_digits=63,
-                                                decimal_places= -127,
-                                                blank=True)
-    endlumi = models.DecimalField(null=True, max_digits=63,
-                                  decimal_places= -127, blank=True)
+    startlumi = models.FloatField(null=True, blank=True)
+    endlumi = models.FloatField(null=True, blank=True)
     _state = models.IntegerField(null=True, blank=True, db_column='state')
-    beamenergy = models.DecimalField(null=True, max_digits=126,
-                                                decimal_places= -127,
-                                                blank=True)
+    beamenergy = models.FloatField(null=True, blank=True)
     runtype = models.CharField(max_length=255, blank=True)
     partitionname = models.CharField(max_length=16, blank=True)
     destination_old = models.IntegerField(null=True, blank=True)
@@ -85,6 +123,7 @@ class Rundbruns(models.Model):
                                                     order_by("activity"):
                 Rundbruns._all_activities.append(item['activity'])
         return Rundbruns._all_activities
+    
     
     @classmethod
     def all_partitions(cls):
@@ -149,16 +188,16 @@ class Rundbruns(models.Model):
         return Rundbruns.file_counters_stat(self)
 
     @classmethod
-    def file_counters_stat(cls,runs):
-        result = [[-10,'EVENTS',0,'Number of events']]
+    def file_counters_stat(cls, runs):
+        result = [[-10, 'EVENTS', 0, 'Number of events']]
         if not runs:
             return []
         args = []
-        if not isinstance(runs,Rundbruns):
-            (sql_clause,args) = runs._as_sql()
+        if not isinstance(runs, Rundbruns):
+            (sql_clause, args) = runs._as_sql()
             cursor = connection.cursor();
             cursor.execute('SELECT SUM(events) FROM Rundbfiles'
-                ' WHERE runid in (%s)' % sql_clause,args)
+                ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
             (events,) = cursor.fetchone() 
             result[0][2] = events
             runs_clause = ' in (%s)' % sql_clause
@@ -172,7 +211,7 @@ class Rundbruns(models.Model):
             " fc.fileid=f.fileid AND d.key=fc.type and d.type='FCOUNT'"
             " AND f.runid %s AND f.stream='FULL'"
             " GROUP BY fc.type,d.value, d.description ORDER BY fc.TYPE" 
-                % runs_clause,args)
+                % runs_clause, args)
         result += cursor.fetchall()
         return result
 
@@ -199,7 +238,7 @@ class Rundbruns(models.Model):
         managed = False
 
 class Rundbrunparams(models.Model):
-    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True, 
+    run = models.ForeignKey(Rundbruns, db_column='runid', primary_key=True,
                                                                     unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
@@ -251,7 +290,7 @@ class Rundbfiles(models.Model):
 
     def castor(self):
         if self.run.destination == 'OFFLINE' and self.directory():
-            return self.directory().replace('/daqarea', 
+            return self.directory().replace('/daqarea',
                                     '/castor/cern.ch/grid') + "/" + self.name
         return None
 
@@ -282,7 +321,7 @@ class Rundbfiles(models.Model):
     def file_counters(self):
         result = []
         for counter in self.rundbfilecounters_set.all():
-            result.append((counter.type,counter.counter.key,counter.value,
+            result.append((counter.type, counter.counter.key, counter.value,
                                                 counter.counter.description))
         return result
     @classmethod
@@ -297,7 +336,7 @@ class Rundbfiles(models.Model):
         managed = False
 
 class Rundbfilecounters(models.Model):
-    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, 
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True,
                                                                     unique=True)
     type = models.IntegerField(null=True, blank=True)
     value = models.IntegerField(null=True, blank=True)
@@ -315,7 +354,7 @@ class Rundbfilecounters(models.Model):
         db_table = u'rundbfilecounters'
 
 class Rundbfileparams(models.Model):
-    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True, 
+    file = models.ForeignKey(Rundbfiles, db_column='fileid', primary_key=True,
                                                                     unique=True)
     name = models.CharField(unique=True, max_length=32)
     value = models.CharField(max_length=255, blank=True)
@@ -327,7 +366,7 @@ class Rundbfileparams(models.Model):
 class Rundbdatamover(models.Model):
     id = models.CharField(max_length=50, blank=True, unique=True)
     type = models.CharField(max_length=10, blank=True, unique=True)
-    time = models.DateTimeField(null=True, blank=True, auto_now=True, 
+    time = models.DateTimeField(null=True, blank=True, auto_now=True,
                                                             primary_key=True)
     message = models.CharField(max_length=255, blank=True)
     trials = models.IntegerField(null=True, blank=True)

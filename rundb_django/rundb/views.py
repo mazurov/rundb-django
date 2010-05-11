@@ -5,41 +5,49 @@ from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
-from rundb_django.rundb.models import Rundbruns, Rundbfiles
+from rundb_django.rundb.models import Rundbruns, Rundbfiles, Rundbfills
 from rundb_django.rundb.search_form import SearchForm, ApiForm
 
 import pprint
 import logging
 
 def search_form(request=None):
-    nomatter = ('','ANY')
-    partitions = [nomatter]
-    for partition in Rundbruns.all_partitions():
-        if partition:
-          partitions.append((partition, partition))
-    
-    runtypes = [nomatter]
-    for runtype in Rundbruns.all_runtypes():
-        if runtype:
-            runtypes.append((runtype, runtype))
+    nomatter = ('', 'ANY')
+    partitions = [nomatter] + [(partition, partition) for partition in 
+                                                Rundbruns.all_partitions() 
+                                                if  partition]
+    runtypes = [nomatter] + [(runtype, runtype) for runtype in 
+                                                Rundbruns.all_runtypes() 
+                                                if runtype]
   
-    destinations = [nomatter]
-    for destination in Rundbruns.all_destinations():
-        if destination:
-            destinations.append((destination, destination))
-  
-    activities = [nomatter]
-    for activity in Rundbruns.all_activities():
-        if activity:
-            activities.append((activity, activity))
-  
+    destinations = [nomatter] + [(destination, destination) for destination in 
+                                                Rundbruns.all_destinations() 
+                                                if destination]
+    activities = [nomatter] + [(activity, activity) for activity in 
+                                                    Rundbruns.all_activities() 
+                                                    if activity]
     return SearchForm(request.user, partitions, runtypes, destinations,
                       activities, request.POST) 
   
 
 def index(request):
-    return render_to_response('rundb/rundb_index.html',
+    return search(request)
+
+def search(request):
+    return render_to_response('rundb/rundb_search.html',
       {'form':search_form(request)}, context_instance=RequestContext(request))
+
+def fills(request):
+    fills = Rundbfills.objects.filter(time_total__gt=0).all().\
+                                                order_by('-timestamp')[:20]
+    return render_to_response('rundb/rundb_fills.html',
+      {'fills':fills}, context_instance=RequestContext(request))
+    
+def fill(request, fillid):
+    fill = get_object_or_404(Rundbfills, pk=fillid)
+    return render_to_response('rundb/rundb_fill.html',
+      {'fill':fill, 'fills':[fill], 'single':True}, context_instance=RequestContext(request))
+
 
 def redirect(request):
     return HttpResponseRedirect("/")
@@ -71,6 +79,7 @@ def maintable(request):
                                                 form.cleaned_data['fillid_max']:
                 runs = runs.filter(fillid__gte=form.cleaned_data['fillid_min'])
                 runs = runs.filter(fillid__lte=form.cleaned_data['fillid_max'])
+                
             
             if form.cleaned_data['partitions']:
                 runs = runs.filter(partitionname=
@@ -83,6 +92,12 @@ def maintable(request):
                                    )
             if form.cleaned_data['activities']:
                 runs = runs.filter(activity=form.cleaned_data['activities'])
+
+            if form.cleaned_data['beamenergy']:
+                runs = runs.filter(
+                        beamenergy__gte=form.cleaned_data['beamenergy'] - 1)                
+                runs = runs.filter(
+                        beamenergy__lte=form.cleaned_data['beamenergy'] + 1)
           
             if form.cleaned_data['pinned'] == 1:
                 runs = runs.filter(rundbfiles__refcount__gt=0)
@@ -118,6 +133,17 @@ def maintable(request):
                                                 form.cleaned_data['endtime'])
                     runs = runs.filter(endtime__gte=endtime)
             
+            if form.cleaned_data['velo_position']:
+                runs = runs.filter(rundbrunparams__name='veloPosition',
+                  rundbrunparams__value__iregex=
+                                            form.cleaned_data['velo_position'])
+            
+            if form.cleaned_data['magnet_state']:
+                runs = runs.filter(rundbrunparams__name='magnetState',
+                  rundbrunparams__value__iregex=
+                                            form.cleaned_data['magnet_state'])
+
+            
         counters = None
         if form.cleaned_data['is_show_stat'] :
             counters = Rundbruns.file_counters_stat(runs.all())
@@ -125,7 +151,7 @@ def maintable(request):
         tpl = loader.get_template('rundb/rundb_maintable.html')
         
         ctx = RequestContext(request,
-                             {'counters':counters,'runs': runs.all().
+                             {'counters':counters, 'runs': runs.all().
                             order_by('-runid')[0:form.cleaned_data['onpage']]})
         json = simplejson.dumps(tpl.render(ctx))
     else:

@@ -7,6 +7,20 @@
 {%block content%}
 <br/>
 {% include "rundb/rundb_maintable.html" %}
+<table>
+<thead>
+<tr>
+  <th>Beam Energy</th>
+  <th>Start Lumi</th>
+  <th>End Lumi</th>
+</tr>
+</thead>
+<tr>
+  <td>{{run.beamenergy}}</td>
+  <td>{{run.startlumi}}</td>
+  <td>{{run.endlumi}}</td>
+</tr>
+</table>
 {% with  run.file_counters as counters%}
 {% include "rundb/rundb_files_stat.html" %}
 {% endwith %}
