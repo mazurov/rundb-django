@@ -33,7 +33,7 @@ class Rundbfills(models.Model):
     
     @property
     def inefficiency(self):
-        return int(round(100 * (1 - self.lumi_logged / self.lumi_total)))
+        return round(100 * (1 - self.lumi_logged / self.lumi_total), 2)
     
     
     @property
@@ -42,19 +42,19 @@ class Rundbfills(models.Model):
     
     @property
     def hvon_lost(self):
-        return int(round(100 * (1 - self.lumi_hvon / self.lumi_total)))
+        return round(100 * (1 - self.lumi_hvon / self.lumi_total), 2)
     
     @property
     def veloin_lost(self):
-        return int(round(100 * (1 - self.lumi_veloin / self.lumi_hvon)))
+        return round(100 * (1 - self.lumi_veloin / self.lumi_hvon), 2)
     
     @property
     def running_lost(self):    
-        return int(round(100 * (1 - self.lumi_running / self.lumi_veloin)))
+        return round(100 * (1 - self.lumi_running / self.lumi_veloin), 2)
     
     @property
     def ontape_lost(self):    
-        return int(round(100 * (1 - self.lumi_logged / self.lumi_running)))
+        return round(100 * (1 - self.lumi_logged / self.lumi_running), 2)
 
     class Meta:
         db_table = u'rundbfills'

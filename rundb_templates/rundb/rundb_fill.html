@@ -12,35 +12,45 @@
 {% include "rundb/rundb_fills_table.inc.html" %}
 
 <table style="width:30%">
+<tr>
+<thead>
+<tr>
+  <th>Counter</th>
+  <th>N</th>
+  <th>&nbsp;</th>
+  <th style="text-align:right">%</th>
+</tr>
+</thead>
+</tr>
 <tr class="odd">
   <td><b>DELIVERED:</b></td>
   <td>{{fill.lumi_total}}</td>
   <td>logged {{fill.lumi_logged}}</td>
-  <td> {{fill.delivered}} %</td>
+  <td style="text-align:right"> {{fill.delivered}}</td>
 </tr>
 <tr class="even"> 
   <td><b>HV ON:</b></td>
   <td>{{fill.lumi_hvon}}</td>
   <td>lost</td>
-  <td>{{fill.hvon_lost}} %</td>
+  <td style="text-align:right">{{fill.hvon_lost}}</td>
 </tr>
 <tr class="odd">
   <td><b>VELO IN:</b></td>
   <td>{{fill.lumi_veloin}}</td>
   <td>lost</td>
-  <td>{{fill.veloin_lost}} %</td>
+  <td style="text-align:right">{{fill.veloin_lost}}</td>
 </tr>
 <tr class="even">
   <td><b>RUNNING:</b></td>
   <td>{{fill.lumi_running}}</td>
   <td>lost</td>
-  <td>{{fill.running_lost}} % </td>
+  <td style="text-align:right">{{fill.running_lost}}</td>
 </tr>
 <tr class="odd">
   <td><b>ON TAPE:</b></td>
   <td>{{fill.lumi_logged}}</td>
   <td>lost</td>
-  <td>{{fill.ontape_lost}} %</td>
+  <td style="text-align:right">{{fill.ontape_lost}}</td>
 </td>
 </table> 
 {%endblock%}
