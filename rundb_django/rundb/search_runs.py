@@ -101,7 +101,7 @@ def search_runs(data, request):
       
   counters = None
   if data['is_show_stat'] :
-      counters = Rundbruns.file_counters_stat(runs.all())
+      counters = Rundbruns.file_counters_stat(runs)
       
   tpl = loader.get_template('rundb/rundb_maintable.html')
   ctx = RequestContext(request,

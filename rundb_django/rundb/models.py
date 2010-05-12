@@ -196,27 +196,30 @@ class Rundbruns(models.Model):
 
     @classmethod
     def file_counters_stat(cls, runs):
-        result = {'EVENTS':0}
         if not runs:
             return []
         args = []
+        result = {'EVENTS':0, 'RUNS':0}
+        result['FILES'] = runs.aggregate(files=Count('rundbfiles'))['files']
         if not isinstance(runs, Rundbruns):
-            (sql_clause, args) = runs._as_sql()
-            runs_clause = ' in (%s)' % sql_clause
+          (sql_clause, args) = runs._as_sql()
+          runs_clause = ' in (%s)' % sql_clause
             
-            cursor = connection.cursor();
-            cursor.execute('SELECT SUM(events) FROM Rundbfiles'
+          result['RUNS'] = runs.count()
+          cursor = connection.cursor();
+          cursor.execute('SELECT SUM(events) FROM Rundbfiles'
                 ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
-            (events,) = cursor.fetchone()
-            result['EVENTS'] = events 
-            cursor.execute('SELECT SUM(TO_NUMBER(fp.value)) FROM Rundbfileparams fp  INNER JOIN Rundbfiles f ON fp.fileid=f.fileid'
-                ' WHERE fp.value IS NOT NULL AND fp.NAME=\'physstat\' AND f.runid in (%s) AND f.stream=\'FULL\'' % sql_clause, args)
-            (physstat,) = cursor.fetchone()            
-            result['PHYSSTAT'] = physstat
+          (events,) = cursor.fetchone()
+           
+          cursor.execute('SELECT SUM(TO_NUMBER(fp.value)) FROM Rundbfileparams fp  INNER JOIN Rundbfiles f ON fp.fileid=f.fileid'
+              ' WHERE fp.value IS NOT NULL AND fp.NAME=\'physstat\' AND f.runid in (%s) AND f.stream=\'FULL\'' % sql_clause, args)
+          (physstat,) = cursor.fetchone()            
+          result['PHYSSTAT'] = physstat
         else:
-            result['EVENTS'] = runs.events
-            result['PHYSSTAT'] = runs.physstat
-            runs_clause = '=%d' % runs.runid
+          runs_clause = '=%d' % runs.runid
+          result['RUNS'] = 1
+          result['EVENTS'] = runs.events
+          result['PHYSSTAT'] = runs.physstat
         
         cursor = connection.cursor()
         cursor.execute('SELECT d.value , SUM(fc.VALUE)'
