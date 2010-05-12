@@ -3,7 +3,6 @@
 <script type="text/javascript" src="{{MEDIA_URL}}rundb/js/rundb.functions.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#frmSearch").submit();
   $('.b-input-hint').inputHints();
   
   $("fieldset.collapsible").collapse();
@@ -16,8 +15,8 @@ $(document).ready(function(){
 {%block top%}
 <div class="span-21 last">
 <div id="rundb-formControl" >
-<a id="rundb-formControl-show" class="button">Show form...</a>
-<a id="rundb-formControl-hide"  style="display:none" class="button">Hide form...</a>
+<a id="rundb-formControl-show" class="button" style="display:none" >Show form...</a>
+<a id="rundb-formControl-hide"  class="button">Hide form...</a>
 </div>
 </div>
 {%endblock%}

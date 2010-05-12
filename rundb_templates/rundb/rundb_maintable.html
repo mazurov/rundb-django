@@ -35,7 +35,7 @@ $(document).ready(function(){
         </td>
         <td>{{run.runid}}</td>
         <td>{%if run.fill%}<a href="/rundb/fill/{{run.fill.fill_id}}">{%endif%}{{run.fillid}}{% if run.fill%}</a>{% endif %}</td>
-        <td>{{ run.rundbfiles_set.count }}</td>
+        <td style="text-align:right">{{ run.rundbfiles_set.count }}</td>
         <td>{{ run.partitionname }}: 
            {% if run.is_subpartitions_short %} 
             {% for partition in run.subpartitions %}
@@ -58,7 +58,7 @@ $(document).ready(function(){
         <td>{{run.runtype}}<br/>
         {{run.activity}}</td>
         <td>{{run.tck_hex}}</td>
-        <td>{{run.events}}</td>
+        <td style="text-align:right">{{run.events}}</td>
         <td>{{run.state}}<br/>{{run.destination}}</td>
         <td>{{run.starttime|date:"Y-m-d H:i:s" }}</td>
         <td>{{run.endtime|date:"Y-m-d H:i:s" }}</td>

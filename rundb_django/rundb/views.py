@@ -30,7 +30,7 @@ def search_form(request=None):
   
 
 def index(request):
-    return search(request)
+    return fills(request)
 
 def search(request):
     return render_to_response('rundb/rundb_search.html',
