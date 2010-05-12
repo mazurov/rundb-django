@@ -184,35 +184,49 @@ class Rundbruns(models.Model):
                             Sum('events')
                             )['events__sum']
     @property
+    def physstat(self):
+        result = 0
+        for file in self.rundbfiles_set.filter(stream='FULL').all():
+            result += file.physstat()
+        return result
+                                                        
+    @property
     def file_counters(self):
         return Rundbruns.file_counters_stat(self)
 
     @classmethod
     def file_counters_stat(cls, runs):
-        result = [[-10, 'EVENTS', 0, 'Number of events']]
+        result = {'EVENTS':0}
         if not runs:
             return []
         args = []
         if not isinstance(runs, Rundbruns):
             (sql_clause, args) = runs._as_sql()
+            runs_clause = ' in (%s)' % sql_clause
+            
             cursor = connection.cursor();
             cursor.execute('SELECT SUM(events) FROM Rundbfiles'
                 ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
-            (events,) = cursor.fetchone() 
-            result[0][2] = events
-            runs_clause = ' in (%s)' % sql_clause
+            (events,) = cursor.fetchone()
+            result['EVENTS'] = events 
+            cursor.execute('SELECT SUM(TO_NUMBER(fp.value)) FROM Rundbfileparams fp  INNER JOIN Rundbfiles f ON fp.fileid=f.fileid'
+                ' WHERE fp.value IS NOT NULL AND fp.NAME=\'physstat\' AND f.runid in (%s) AND f.stream=\'FULL\'' % sql_clause, args)
+            (physstat,) = cursor.fetchone()            
+            result['PHYSSTAT'] = physstat
         else:
-            result[0][2] = runs.events
+            result['EVENTS'] = runs.events
+            result['PHYSSTAT'] = runs.physstat
             runs_clause = '=%d' % runs.runid
         
         cursor = connection.cursor()
-        cursor.execute('SELECT fc.type, d.value , SUM(fc.VALUE), d.description'
+        cursor.execute('SELECT d.value , SUM(fc.VALUE)'
             ' FROM RUNDBFILECOUNTERS fc, RUNDBDICTNUM d, RUNDBFILES f WHERE'
             " fc.fileid=f.fileid AND d.key=fc.type and d.type='FCOUNT'"
             " AND f.runid %s AND f.stream='FULL'"
             " GROUP BY fc.type,d.value, d.description ORDER BY fc.TYPE" 
                 % runs_clause, args)
-        result += cursor.fetchall()
+        result.update(dict(cursor.fetchall()))
+        Rundbfiles.update_other_odin_counters(result)        
         return result
 
     @property
@@ -276,7 +290,10 @@ class Rundbfiles(models.Model):
         return self._state
 
     def physstat(self):
-        return self.param("physstat")
+        value = self.param("physstat") 
+        if value:
+            return int(value)
+        return 0
     
     def directory(self):
         return self.param("directory")
@@ -319,11 +336,19 @@ class Rundbfiles(models.Model):
 
     @property
     def file_counters(self):
-        result = []
+        result = {'EVENTS':self.events, 'PHYSSTAT':self.physstat()}
         for counter in self.rundbfilecounters_set.all():
-            result.append((counter.type, counter.counter.key, counter.value,
-                                                counter.counter.description))
+            result[counter.counter.value] = counter.value
+        Rundbfiles.update_other_odin_counters(result)
         return result
+    
+    @classmethod    
+    def update_other_odin_counters(cls, result):
+        trg = 0
+        for key in ['TRG4', 'TRG5', 'TRG6', 'TRG7']:
+            if (key in result.keys()) and result[key]:
+                trg += result[key]
+        result['TRG'] = trg
     @classmethod
     def all_states(cls):
         if None == Rundbfiles._all_states:

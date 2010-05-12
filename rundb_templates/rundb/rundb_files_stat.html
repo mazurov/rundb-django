@@ -1,13 +1,70 @@
 {% if counters %}
-<table style="width:30%;">
+<fieldset>
 {%if not file%}
-<caption>Counters summary for files from FULL stream</caption>
+<legend>Counters summary for files from FULL stream: </legend>
 {%endif%}
-{% for counter in counters %}
-<tr class="{%cycle "even" "odd"%}">
-  <td><b>{{counter.3}}</b></td>
-  <td style="text-align: right">{{counter.2}}</td>
+<table>
+<thead>
 <tr>
-{%endfor%}
+  <th>Events</th>
+  <th>PhysStat</th>  
+  <th>LowLumi</th>
+  <th>HighLumi</th>
+</tr>
+</thead>
+<tr>
+ <td>{{counters.EVENTS}}</td><td>{{counters.PHYSSTAT}}</td><td>{{counters.LOWLUMI}}</td><td>{{counters.MIDLUMI}}</td>
+</tr>
 </table>
+
+<table>
+<thead>
+<tr>
+  <th>ODIN type</th>
+  <th>Physics</th>
+  <th>BeamGas</th>
+  <th>Lumi</th>
+  <th>Technical</th>
+  <th>Other</th>  
+</tr>
+</thead>
+<tr>
+  <td>&nbsp;</td>
+  <td>{{counters.TRG0}}</td>
+  <td>{{counters.TRG1}}</td>
+  <td>{{counters.TRG2}}</td>
+  <td>{{counters.TRG3}}</td>
+  <td>{{counters.TRG}}</td>  
+</tr>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>HLT tags</th>
+  <th>Physics</th>
+  <th>MinBias</th>
+  <th>Lumi</th>
+  <th>BeamGas</th>
+  <th>Other</th>  
+</tr>
+</thead>
+<tr>
+  <th>Inclusive</th>
+  <td>{{counters.PHYSIN}}</td>
+  <td>{{counters.MBIASIN}}</td>
+  <td>{{counters.LUMIIN}}</td>
+  <td>{{counters.BEAMGASIN}}</td>
+  <td>{{counters.RANDIN}}</td>  
+</tr>
+<tr>
+  <th>Exclusive</th>
+  <td>{{counters.PHYSEX}}</td>
+  <td>{{counters.MBIASEX}}</td>
+  <td>{{counters.LUMIEX}}</td>
+  <td>{{counters.BEAMGASEX}}</td>
+  <td>{{counters.RANDEX}}</td>  
+</tr>
+</table>
+</fieldset>
 {% endif %}
