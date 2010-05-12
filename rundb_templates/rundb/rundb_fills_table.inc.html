@@ -2,7 +2,6 @@
 <table>
 <thead>
   <tr>
-    <th></th>
     <th>Fill id</th>
     <th>Date</th>
     <th>Stable Beam duration</th>
@@ -13,11 +12,10 @@
 </thead>
 {% for fill in fills %}
   <tr>
-    <td>{% if not single %}
-         <a href="/rundb/fill/{{fill.fill_id}}/"  style="text-decoration:none"><span class="ss_sprite ss_information">&nbsp;</span></a>
-         {%endif%}
+    <td>{% if not single %} <a href="/rundb/fill/{{fill.fill_id}}/"  style="text-decoration:none">{% endif %}
+         {{fill.fill_id}}
+         {% if not single %}</a>{% endif %}
      </td>
-    <td>{{fill.fill_id}}</td>
     <td>{{fill.timestamp}}</td>
     <td>{{fill.time_total|sectodur}}</td>
     <td>{{fill.lumi_total}}</td>

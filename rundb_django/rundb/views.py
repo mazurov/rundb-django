@@ -1,4 +1,3 @@
-from datetime  import datetime, time
 from django.template import RequestContext, loader
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.utils import simplejson
@@ -7,7 +6,7 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from rundb_django.rundb.models import Rundbruns, Rundbfiles, Rundbfills
 from rundb_django.rundb.search_form import SearchForm, ApiForm
-
+from rundb_django.rundb.search_runs  import search_runs
 import pprint
 import logging
 
@@ -45,8 +44,10 @@ def fills(request):
     
 def fill(request, fillid):
     fill = get_object_or_404(Rundbfills, pk=fillid)
+    search_data = {'fillid_min':fillid, 'partitions':'LHCb',
+                   'destination':'OFFLINE', 'onpage':100}
     return render_to_response('rundb/rundb_fill.html',
-      {'fill':fill, 'fills':[fill], 'single':True}, context_instance=RequestContext(request))
+      {'fill':fill, 'fills':[fill], 'single':True, 'stat':search_runs(search_data, request)}, context_instance=RequestContext(request))
 
 
 def redirect(request):
@@ -58,102 +59,7 @@ Result for ajax form
 def maintable(request):
     form = search_form(request)
     if form.is_valid():
-        runs = Rundbruns.objects
-        runs.annotate(files_count=Count('rundbfiles'))
-
-        if form.cleaned_data['runid_min'] and \
-                                             not form.cleaned_data['runid_max']:
-            runs = runs.filter(runid=form.cleaned_data['runid_min'])
-        else:
-            if form.cleaned_data['fillid_min'] and \
-                                            not form.cleaned_data['fillid_max']:
-                runs = runs.filter(fillid=form.cleaned_data['fillid_min'])
-            
-            if form.cleaned_data['runid_min'] and \
-                                                form.cleaned_data['runid_max']:
-                runs = runs.filter(runid__gte=form.cleaned_data['runid_min'])
-            if form.cleaned_data['runid_max']:
-                runs = runs.filter(runid__lte=form.cleaned_data['runid_max'])
-            
-            if form.cleaned_data['fillid_min'] and \
-                                                form.cleaned_data['fillid_max']:
-                runs = runs.filter(fillid__gte=form.cleaned_data['fillid_min'])
-                runs = runs.filter(fillid__lte=form.cleaned_data['fillid_max'])
-                
-            
-            if form.cleaned_data['partitions']:
-                runs = runs.filter(partitionname=
-                                            form.cleaned_data['partitions'])
-            if form.cleaned_data['runtypes']:
-                runs = runs.filter(runtype=form.cleaned_data['runtypes'])
-            if form.cleaned_data['destinations']:
-                runs = runs.filter(
-                                  destination=form.cleaned_data['destinations']
-                                   )
-            if form.cleaned_data['activities']:
-                runs = runs.filter(activity=form.cleaned_data['activities'])
-
-            if form.cleaned_data['beamenergy']:
-                runs = runs.filter(
-                        beamenergy__gte=form.cleaned_data['beamenergy'] - 1)                
-                runs = runs.filter(
-                        beamenergy__lte=form.cleaned_data['beamenergy'] + 1)
-          
-            if form.cleaned_data['pinned'] == 1:
-                runs = runs.filter(rundbfiles__refcount__gt=0)
-          
-            if (request.user.is_authenticated()) and (
-                                            form.cleaned_data['pinned'] == 2):
-                runs = runs.filter(rundbfiles__refowner=request.user.username)
-    
-          
-            if form.cleaned_data['startdate']:
-                starttime = datetime.combine(
-                            form.cleaned_data['startdate'], time.min)
-                if form.cleaned_data['starttime']:
-                    starttime = datetime.combine(starttime,
-                                                form.cleaned_data['starttime'])
-                runs = runs.filter(starttime__gte=starttime)
-            else:
-                if form.cleaned_data['starttime']:
-                    starttime = datetime.combine(datetime.now(),
-                                                 form.cleaned_data['starttime'])
-                    runs = runs.filter(starttime__gte=starttime)
-          
-            if form.cleaned_data['enddate']:
-                endtime = datetime.combine(
-                                form.cleaned_data['enddate'], time.max)
-                if form.cleaned_data['endtime']:
-                    endtime = datetime.combine(endtime,
-                                                form.cleaned_data['endtime'])
-                runs = runs.filter(endtime__lte=endtime)
-            else:
-                if form.cleaned_data['endtime']:
-                    endtime = datetime.combine(datetime.now(),
-                                                form.cleaned_data['endtime'])
-                    runs = runs.filter(endtime__gte=endtime)
-            
-            if form.cleaned_data['velo_position']:
-                runs = runs.filter(rundbrunparams__name='veloPosition',
-                  rundbrunparams__value__iregex=
-                                            form.cleaned_data['velo_position'])
-            
-            if form.cleaned_data['magnet_state']:
-                runs = runs.filter(rundbrunparams__name='magnetState',
-                  rundbrunparams__value__iregex=
-                                            form.cleaned_data['magnet_state'])
-
-            
-        counters = None
-        if form.cleaned_data['is_show_stat'] :
-            counters = Rundbruns.file_counters_stat(runs.all())
-
-        tpl = loader.get_template('rundb/rundb_maintable.html')
-        
-        ctx = RequestContext(request,
-                             {'counters':counters, 'runs': runs.all().
-                            order_by('-runid')[0:form.cleaned_data['onpage']]})
-        json = simplejson.dumps(tpl.render(ctx))
+        json = simplejson.dumps(search_runs(form.cleaned_data, request))
     else:
         json = simplejson.dumps("form not valid" + str(form.errors))
 
