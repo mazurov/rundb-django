@@ -1,3 +1,4 @@
+{% load rundb_extras %}
 <table>
 <thead>
   <tr>
@@ -18,9 +19,9 @@
      </td>
     <td>{{fill.fill_id}}</td>
     <td>{{fill.timestamp}}</td>
-    <td>{{fill.time_total}}</td>
-    <td>{{fill.lumi_total}}</td>
-    <td>{{fill.lumi_logged}}</td>
+    <td>{{fill.time_total|sectodur}}</td>
+    <td>{{fill.lumi_total|sectodur}}</td>
+    <td>{{fill.lumi_logged|sectodur}}</td>
     <td>{{fill.inefficiency}}</td>
   </tr>
 {% endfor %}
