@@ -45,7 +45,7 @@ def fills(request):
 def fill(request, fillid):
     fill = get_object_or_404(Rundbfills, pk=fillid)
     search_data = {'fillid_min':fillid, 'partitions':'LHCb',
-                   'destination':'OFFLINE', 'onpage':100}
+                   'destinations':'OFFLINE', 'onpage':100}
     return render_to_response('rundb/rundb_fill.html',
       {'fill':fill, 'fills':[fill], 'single':True, 'stat':search_runs(search_data, request)}, context_instance=RequestContext(request))
 
