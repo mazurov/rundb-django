@@ -209,12 +209,12 @@ class Rundbruns(models.Model):
           cursor = connection.cursor();
           cursor.execute('SELECT SUM(events) FROM Rundbfiles'
                 ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
-          (events,) = cursor.fetchone()
+          (result['EVENTS'] ,) = cursor.fetchone()
+          
            
           cursor.execute('SELECT SUM(TO_NUMBER(fp.value)) FROM Rundbfileparams fp  INNER JOIN Rundbfiles f ON fp.fileid=f.fileid'
               ' WHERE fp.value IS NOT NULL AND fp.NAME=\'physstat\' AND f.runid in (%s) AND f.stream=\'FULL\'' % sql_clause, args)
-          (physstat,) = cursor.fetchone()            
-          result['PHYSSTAT'] = physstat
+          (result['PHYSSTAT'],) = cursor.fetchone()            
         else:
           runs_clause = '=%d' % runs.runid
           result['RUNS'] = 1
