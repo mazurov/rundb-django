@@ -9,6 +9,7 @@
 # 'django-admin.py sqlcustom [appname]'
 # into your database.
 
+
 from django.db import models
 from django.db.models import Sum, Count
 from django.db import connection
@@ -200,12 +201,21 @@ class Rundbruns(models.Model):
             return []
         args = []
         result = {'EVENTS':0, 'RUNS':0}
-        result['FILES'] = runs.aggregate(files=Count('rundbfiles'))['files']
         if not isinstance(runs, Rundbruns):
           (sql_clause, args) = runs._as_sql()
           runs_clause = ' in (%s)' % sql_clause
             
-          result['RUNS'] = runs.count()
+
+          cursor = connection.cursor();
+          cursor.execute('SELECT COUNT(DISTINCT runid) FROM Rundbfiles'
+                ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
+          (result['RUNS'] ,) = cursor.fetchone()
+          
+          cursor = connection.cursor();
+          cursor.execute('SELECT COUNT(*) FROM Rundbfiles'
+                ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
+          (result['FILES'] ,) = cursor.fetchone()          
+          
           cursor = connection.cursor();
           cursor.execute('SELECT SUM(events) FROM Rundbfiles'
                 ' WHERE runid in (%s) AND stream=\'FULL\'' % sql_clause, args)
@@ -218,6 +228,7 @@ class Rundbruns(models.Model):
         else:
           runs_clause = '=%d' % runs.runid
           result['RUNS'] = 1
+          result['FILES'] = runs.rundbfiles_set.filter(stream='FULL').count()
           result['EVENTS'] = runs.events
           result['PHYSSTAT'] = runs.physstat
         
@@ -339,7 +350,8 @@ class Rundbfiles(models.Model):
 
     @property
     def file_counters(self):
-        result = {'EVENTS':self.events, 'PHYSSTAT':self.physstat()}
+        result = {'EVENTS':self.events, 'PHYSSTAT':self.physstat(),
+                   'FILES':1, 'RUNS':1}
         for counter in self.rundbfilecounters_set.all():
             result[counter.counter.value] = counter.value
         Rundbfiles.update_other_odin_counters(result)

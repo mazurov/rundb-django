@@ -1,5 +1,6 @@
 from django.template import RequestContext, loader
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, \
+                                                        HttpResponseBadRequest
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Count
@@ -7,8 +8,8 @@ from django.contrib.auth.decorators import login_required
 from rundb_django.rundb.models import Rundbruns, Rundbfiles, Rundbfills
 from rundb_django.rundb.search_form import SearchForm, ApiForm
 from rundb_django.rundb.search_runs  import search_runs
-import pprint
-import logging
+#import pprint
+#import logging
 
 def search_form(request=None):
     nomatter = ('', 'ANY')
@@ -27,7 +28,7 @@ def search_form(request=None):
                                                     if activity]
     return SearchForm(request.user, partitions, runtypes, destinations,
                       activities, request.POST) 
-  
+
 
 def index(request):
     return fills(request)

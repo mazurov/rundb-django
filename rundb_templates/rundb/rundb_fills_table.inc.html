@@ -2,13 +2,22 @@
 <table>
 <thead>
   <tr>
+    <td colspan="5">&nbsp;</td>
+    <th colspan="5" style="text-align:center">Inefficiency (%)</th>
+  </tr>
+  <tr>
     <th>Fill id</th>
     <th>Date</th>
     <th>Stable Beam duration</th>
     <th>Delivered lumi</th>
     <th>Stored lumi</th>
-    <th>Inefficienty (%)</th>
+    <th>Total</th>
+    <th>HV ON</th>
+    <th>VELO IN</th>
+    <th>RUNNING</th>
+    <th>ON TAPE</th>
   </tr>
+  
 </thead>
 {% for fill in fills %}
   <tr>
@@ -21,6 +30,10 @@
     <td>{{fill.lumi_total}}</td>
     <td>{{fill.lumi_logged}}</td>
     <td>{{fill.inefficiency}}</td>
+    <td>{{fill.lumi_hvon}}</td>
+    <td>{{fill.lumi_veloin}}</td>
+    <td>{{fill.lumi_running}}</td>
+    <td>{{fill.lumi_logged}}</td>
   </tr>
 {% endfor %}
 </table>
