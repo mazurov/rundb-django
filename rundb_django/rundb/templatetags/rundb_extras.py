@@ -30,10 +30,10 @@ def sectodur(value, arg=''):
         # If short string is enabled
         if arg != 'long':
             # Set short names
-            dayUnitName = ' d'
-            hourUnitName = ' h'
-            minUnitName = ' m'
-            secUnitName = ' s'
+            dayUnitName = ' day'
+            hourUnitName = ' hr'
+            minUnitName = ' min'
+            secUnitName = ' sec'
             # Set short duration unit splitters
             lastDurSplitter = ' '
             nextDurSplitter = lastDurSplitter
