@@ -5,6 +5,7 @@
 <title>RUNDB - {% block title_head %}{% endblock %}</title>
 {% include "head.html" %}
 {% block head_javascript %}{% endblock %}
+{% if request_from_external%}
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -16,8 +17,8 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
 </script>
+{% endif %}
 </head>
 <body>
 <div class="container">
