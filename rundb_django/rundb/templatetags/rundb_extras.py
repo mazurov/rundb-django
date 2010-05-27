@@ -31,9 +31,9 @@ def sectodur(value, arg=''):
         if arg != 'long':
             # Set short names
             dayUnitName = ' day'
-            hourUnitName = ' hr'
-            minUnitName = ' min'
-            secUnitName = ' sec'
+            hourUnitName = ':'
+            minUnitName = ':'
+            secUnitName = ''
             # Set short duration unit splitters
             lastDurSplitter = ' '
             nextDurSplitter = lastDurSplitter
