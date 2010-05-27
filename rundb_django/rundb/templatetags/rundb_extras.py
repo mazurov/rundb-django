@@ -91,7 +91,7 @@ def sectodur(value, arg=''):
         # If number of hours is greater than 0                
         if hours > 0:
             # Add multiple days to duration string
-            durationString += hourSplitter + ' ' + ("02d" % hours) + hourUnitName
+            durationString += hourSplitter + ' ' + ("%02d" % hours) + hourUnitName
         
         # Determine if next string is to be shown
         if minutes > 0:
