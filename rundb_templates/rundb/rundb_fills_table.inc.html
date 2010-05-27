@@ -27,13 +27,13 @@
      </td>
     <td>{{fill.timestamp}}</td>
     <td>{{fill.time_total|sectodur}}</td>
-    <td>{{fill.lumi_total}}</td>
-    <td>{{fill.lumi_logged}}</td>
-    <td>{{fill.inefficiency}}</td>
-    <td>{{fill.hvon_lost}}</td>
-    <td>{{fill.veloin_lost}}</td>
-    <td>{{fill.running_lost}}</td>
-    <td>{{fill.ontape_lost}}</td>
+    <td class="numbers">{{fill.lumi_total|floatformat:2}}</td>
+    <td class="numbers">{{fill.lumi_logged|floatformat:2}}</td>
+    <td class="numbers">{{fill.inefficiency|floatformat:2}}</td>
+    <td class="numbers">{{fill.hvon_lost|floatformat:2}}</td>
+    <td class="numbers">{{fill.veloin_lost|floatformat:2}}</td>
+    <td class="numbers">{{fill.running_lost|floatformat:2}}</td>
+    <td class="numbers">{{fill.ontape_lost|floatformat:2}}</td>
   </tr>
 {% endfor %}
 </table>
