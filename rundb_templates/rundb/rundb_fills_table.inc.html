@@ -8,7 +8,7 @@
   <tr>
     <th>Fill id</th>
     <th>Date</th>
-    <th>Stable Beam duration</th>
+    <th class="numbers">Stable Beam duration</th>
     <th class="numbers">Delivered lumi</th>
     <th class="numbers">Stored lumi</th>
     <th class="numbers">Total</th>
@@ -26,7 +26,7 @@
          {% if not single %}</a>{% endif %}
      </td>
     <td>{{fill.timestamp}}</td>
-    <td>{{fill.time_total|sectodur}}</td>
+    <td class="numbers">{{fill.time_total|sectodur}}</td>
     <td class="numbers">{{fill.lumi_total}}</td>
     <td class="numbers">{{fill.lumi_logged}}</td>
     <td class="numbers">{{fill.inefficiency|floatformat:2}}</td>
