@@ -75,7 +75,7 @@ def sectodur(value, arg=''):
         # If number of days is greater than 0                
         if days > 0:
             # Add multiple days to duration string
-            durationString += ' ' + str(days) + dayUnitName + (days > 1 and 's' or '')
+            durationString += ' ' + str(days) + dayUnitName + (days > 1 and 's' or '')+' '
         
         # Determine if next string is to be shown
         if hours > 0:
@@ -91,7 +91,7 @@ def sectodur(value, arg=''):
         # If number of hours is greater than 0                
         if hours > 0:
             # Add multiple days to duration string
-            durationString += hourSplitter + ' ' + ("%02d" % hours) + hourUnitName
+            durationString += hourSplitter + ("%02d" % hours) + hourUnitName
         
         # Determine if next string is to be shown
         if minutes > 0:
@@ -106,7 +106,7 @@ def sectodur(value, arg=''):
         # If number of minutes is greater than 0                
         if minutes > 0:
             # Add multiple days to duration string
-            durationString += minSplitter + ' ' + ("%02d" % minutes) + minUnitName
+            durationString += minSplitter + ("%02d" % minutes) + minUnitName
         # Determine if next string is last
         if seconds > 0:
             # Set second splitter
@@ -115,7 +115,7 @@ def sectodur(value, arg=''):
         # If number of seconds is greater than 0                
         if seconds > 0:
             # Add multiple days to duration string
-            durationString += secSplitter + ' ' + ("%02d" % seconds) + secUnitName
+            durationString += secSplitter  + ("%02d" % seconds) + secUnitName
             
         # Return duration string
         return durationString.strip()
