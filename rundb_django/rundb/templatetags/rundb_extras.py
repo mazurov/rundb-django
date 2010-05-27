@@ -78,7 +78,7 @@ def sectodur(value, arg=''):
             durationString += ' ' + str(days) + dayUnitName + (days > 1 and 's' or '')+' '
         
         # Determine if next string is to be shown
-        if hours > 0:
+        if True:
             # If there are no more units after this
             if minutes <= 0 and seconds <= 0:
                 # Set hour splitter to last
@@ -94,7 +94,7 @@ def sectodur(value, arg=''):
         durationString += hourSplitter + ("%02d" % hours) + hourUnitName
         
         # Determine if next string is to be shown
-        if minutes > 0:
+        if True:
             # If there are no more units after this
             if seconds <= 0:
                 # Set minute splitter to last
