@@ -21,16 +21,16 @@ import logging
 class Rundbfills(models.Model):
     fill_id = models.IntegerField(primary_key=True)
     timestamp = models.DateTimeField(null=True, blank=True)
-    time_total = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    time_hvon = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    time_veloin = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    time_running = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    time_logged = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    lumi_total = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    lumi_hvon = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    lumi_veloin = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    lumi_running = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
-    lumi_logged = models.DecimalField(null=True, max_digits=32, decimal_places= -127, blank=True)
+    time_total = models.IntegerField(null=True, blank=True)
+    time_hvon = models.IntegerField(null=True, blank=True)
+    time_veloin = models.IntegerField(null=True, blank=True)
+    time_running = models.IntegerField(null=True, blank=True)
+    time_logged = models.IntegerField(null=True, blank=True)
+    lumi_total = models.IntegerField(null=True, blank=True)
+    lumi_hvon = models.IntegerField(null=True, blank=True)
+    lumi_veloin = models.IntegerField(null=True, blank=True)
+    lumi_running = models.IntegerField(null=True, blank=True)
+    lumi_logged = models.IntegerField(null=True, blank=True)
     
     @property
     def inefficiency(self):
@@ -68,17 +68,17 @@ class Rundbfills(models.Model):
     
     @classmethod
     def statistic(cls):
-        aggregate = cls.objects.aggregate(Sum('time_total'),Sum('lumi_total'),
+        agg = cls.objects.aggregate(Sum('time_total'),Sum('lumi_total'),
                 Sum('lumi_hvon'), Sum('lumi_veloin'), Sum('lumi_running'),
                 Sum('lumi_logged'))
-        run = Rundbfills
-        run.time_total = aggregate['time_total__sum']
-        run.lumi_total = aggregate['lumi_total__sum']
-        run.lumi_hvon = aggregate['lumi_hvon__sum']
-        run.lumi_veloin = aggregate['lumi_veloin__sum']
-        run.lumi_running = aggregate['lumi_running__sum']
-        run.lumi_logged = aggregate['lumi_logged__sum']
-        return run
+        fill = Rundbfills
+        fill.time_total = agg['time_total__sum']
+        fill.lumi_total = agg['lumi_total__sum']
+        fill.lumi_hvon = agg['lumi_hvon__sum']
+        fill.lumi_veloin = agg['lumi_veloin__sum']
+        fill.lumi_running = agg['lumi_running__sum']
+        fill.lumi_logged = agg['lumi_logged__sum']
+        return fill
         
 
     class Meta:
