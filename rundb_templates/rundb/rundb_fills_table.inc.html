@@ -29,24 +29,24 @@
     <td class="numbers">{{fill.time_total|sectodur}}</td>
     <td class="numbers">{{fill.lumi_total}}</td>
     <td class="numbers">{{fill.lumi_logged}}</td>
-    <td class="numbers">{{fill.inefficiency|floatformat:2}}</td>
+    <td class="numbers">{{fill.inefficiency}}</td>
     <td class="numbers">{{fill.hvon_lost|floatformat:2}}</td>
     <td class="numbers">{{fill.veloin_lost|floatformat:2}}</td>
     <td class="numbers">{{fill.running_lost|floatformat:2}}</td>
     <td class="numbers">{{fill.ontape_lost|floatformat:2}}</td>
   </tr>
 {% endfor %}
-
+{%if total %}
     <tr style="background-color:#C3D9FF">
      <td colspan="2" style="text-align:right"><b>Total:</b></td>
-     <td class="numbers">{{stat.time_total|sectodur}}</td>
-     <td class="numbers">{{stat.lumi_total}}</td>
-     <td class="numbers">{{stat.lumi_logged}}</td>
-     <td class="numbers">{{stat.inefficiency|floatformat:2}}</td>
-     <td class="numbers">{{stat.hvon_lost|floatformat:2}}</td>
-     <td class="numbers">{{stat.veloin_lost|floatformat:2}}</td>
-     <td class="numbers">{{stat.running_lost|floatformat:2}}</td>
-     <td class="numbers">{{stat.ontape_lost|floatformat:2}}</td>        
+     <td class="numbers">{{total.time_total__sum|sectodur}}</td>
+     <td class="numbers">{{total.lumi_total__sum}}</td>
+     <td class="numbers">{{total.lumi_logged__sum}}</td>
+     <td class="numbers">{{total.inefficiency|floatformat:2}}</td>
+     <td class="numbers">{{total.hvon_lost|floatformat:2}}</td>
+     <td class="numbers">{{total.veloin_lost|floatformat:2}}</td>
+     <td class="numbers">{{total.running_lost|floatformat:2}}</td>
+     <td class="numbers">{{total.ontape_lost|floatformat:2}}</td>        
     </tr>
-
+{% endif %}
 </table>

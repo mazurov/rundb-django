@@ -26,59 +26,55 @@ class Rundbfills(models.Model):
     time_veloin = models.IntegerField(null=True, blank=True)
     time_running = models.IntegerField(null=True, blank=True)
     time_logged = models.IntegerField(null=True, blank=True)
-    lumi_total = models.IntegerField(null=True, blank=True)
-    lumi_hvon = models.IntegerField(null=True, blank=True)
-    lumi_veloin = models.IntegerField(null=True, blank=True)
-    lumi_running = models.IntegerField(null=True, blank=True)
-    lumi_logged = models.IntegerField(null=True, blank=True)
+    lumi_total = models.FloatField(null=True, blank=True)
+    lumi_hvon = models.FloatField(null=True, blank=True)
+    lumi_veloin = models.FloatField(null=True, blank=True)
+    lumi_running = models.FloatField(null=True, blank=True)
+    lumi_logged = models.FloatField(null=True, blank=True)
+    
     
     @property
     def inefficiency(self):
-        if not self.lumi_total:
-            return 0
-        return round(100 * (1 - self.lumi_logged / self.lumi_total), 2)
-    
+        return Rundbfills.percent(self.lumi_logged, self.lumi_total)        
+
     @property
     def delivered(self):
         return 100 - self.inefficiency
     
     @property
     def hvon_lost(self):
-        if not self.lumi_total:
-            return 0
-        return round(100 * (1 - self.lumi_hvon / self.lumi_total), 2)
+        return Rundbfills.percent(self.lumi_hvon, self.lumi_total)        
     
     @property
     def veloin_lost(self):
-        if not self.lumi_hvon:
-            return 0
-        return round(100 * (1 - self.lumi_veloin / self.lumi_hvon), 2)
+        return Rundbfills.percent(self.lumi_veloin, self.lumi_hvon)
     
     @property
     def running_lost(self):
-        if not self.lumi_veloin:
-            return 0  
-        return round(100 * (1 - self.lumi_running / self.lumi_veloin), 2)
+        return Rundbfills.percent(self.lumi_running, self.lumi_veloin)        
     
     @property
     def ontape_lost(self):
-        if not self.lumi_running:
-            return 0     
-        return round(100 * (1 - self.lumi_logged / self.lumi_running), 2)
+        return Rundbfills.percent(self.lumi_logged, self.lumi_running)
     
     @classmethod
-    def statistic(cls):
+    def percent(cls, value, total):
+        if not total:
+            return 0     
+        return round(100 * (1 - value / total), 2)
+    
+    @classmethod
+    def total(cls):
         agg = cls.objects.aggregate(Sum('time_total'),Sum('lumi_total'),
                 Sum('lumi_hvon'), Sum('lumi_veloin'), Sum('lumi_running'),
                 Sum('lumi_logged'))
-        fill = Rundbfills
-        fill.time_total = agg['time_total__sum']
-        fill.lumi_total = agg['lumi_total__sum']
-        fill.lumi_hvon = agg['lumi_hvon__sum']
-        fill.lumi_veloin = agg['lumi_veloin__sum']
-        fill.lumi_running = agg['lumi_running__sum']
-        fill.lumi_logged = agg['lumi_logged__sum']
-        return fill
+        
+        agg['inefficiency'] = Rundbfills.percent(agg['lumi_logged__sum'], agg['lumi_total__sum'])
+        agg['hvon_lost'] = Rundbfills.percent(agg['lumi_hvon__sum'], agg['lumi_total__sum'])
+        agg['veloin_lost'] = Rundbfills.percent(agg['lumi_veloin__sum'], agg['lumi_hvon__sum'])
+        agg['running_lost'] = Rundbfills.percent(agg['lumi_running__sum'], agg['lumi_veloin__sum'])
+        agg['ontape_lost'] = Rundbfills.percent(agg['lumi_logged__sum'], agg['lumi_running__sum'])
+        return agg
         
 
     class Meta:
