@@ -65,6 +65,21 @@ class Rundbfills(models.Model):
         if not self.lumi_running:
             return 0     
         return round(100 * (1 - self.lumi_logged / self.lumi_running), 2)
+    
+    @classmethod
+    def statistic(cls):
+        aggregate = cls.objects.aggregate(Sum('time_total'),Sum('lumi_total'),
+                Sum('lumi_hvon'), Sum('lumi_veloin'), Sum('lumi_running'),
+                Sum('lumi_logged'))
+        run = Rundbfills
+        run.time_total = aggregate['time_total__sum']
+        run.lumi_total = aggregate['lumi_total__sum']
+        run.lumi_hvon = aggregate['lumi_hvon__sum']
+        run.lumi_veloin = aggregate['lumi_veloin__sum']
+        run.lumi_running = aggregate['lumi_running__sum']
+        run.lumi_logged = aggregate['lumi_logged__sum']
+        return run
+        
 
     class Meta:
         db_table = u'rundbfills'

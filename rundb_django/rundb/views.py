@@ -39,9 +39,10 @@ def search(request):
 
 def fills(request):
     fills = Rundbfills.objects.filter(time_total__gt=0).all().\
-                                                order_by('-timestamp')[:20]
+                                                order_by('-timestamp')
+    statistic = Rundbfills.statistic() 
     return render_to_response('rundb/rundb_fills.html',
-      {'fills':fills}, context_instance=RequestContext(request))
+      {'fills':fills,'stat':statistic}, context_instance=RequestContext(request))
     
 def fill(request, fillid):
     fill = get_object_or_404(Rundbfills, pk=fillid)
