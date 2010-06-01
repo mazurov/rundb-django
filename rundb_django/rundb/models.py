@@ -69,6 +69,16 @@ class Rundbfills(models.Model):
     class Meta:
         db_table = u'rundbfills'
 
+class Rundblhcstatehistory(models.Model):
+    fill_id = models.IntegerField(primary_key=True)
+    fill = models.ForeignKey(Rundbfills, db_column='fill_id')    
+    timestamp = models.DateTimeField(unique=True)
+    state = models.CharField(max_length=64, blank=True)
+    class Meta:
+        ordering = ['-timestamp']
+        db_table = u'rundblhcstatehistory'
+
+
 class Rundbdictnum(models.Model):
     type = models.CharField(unique=True, max_length=10)
     key = models.DecimalField(primary_key=True, unique=True, max_digits=0,
