@@ -108,9 +108,9 @@ def sectodur(value, arg=''):
             # Add multiple days to duration string
         durationString += minSplitter + ("%02d" % minutes) + minUnitName
         # Determine if next string is last
-        if seconds > 0:
+        #if seconds > 0:
             # Set second splitter
-            secSplitter = (len(durationString) > 0 and lastDurSplitter or '')
+        secSplitter = (len(durationString) > 0 and lastDurSplitter or '')
         
         # If number of seconds is greater than 0                
         #if seconds > 0:
