@@ -291,7 +291,7 @@ class Rundbruns(models.Model):
             for param in self.rundbrunparams_set.all():
                 self._params[param.name] = param.value
             #Special case for program version
-            if self._params.has_key('programVersion') && self._params.has_key('program'):
+            if self._params.has_key('programVersion') and self._params.has_key('program'):
                 self._params['program'] += ' ' + self._params['programVersion']
                 del self._params['programVersion']
         return self._params
