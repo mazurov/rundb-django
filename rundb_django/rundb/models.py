@@ -297,7 +297,7 @@ class Rundbruns(models.Model):
                 
                 if param.name == 'program':
                     value += ' ' + programVersion
-                self._params[param.name] = param.value
+                self._params[param.name] = value
         return self._params
 
     class Meta:
