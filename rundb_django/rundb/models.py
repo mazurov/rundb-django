@@ -288,7 +288,15 @@ class Rundbruns(models.Model):
     @property
     def params(self):
         if not self._params:
+            programVersion = ''
             for param in self.rundbrunparams_set.all():
+                value = param.value
+                if param.name == 'programVersion':
+                    programVersion = value
+                    continue
+                
+                if param.name == 'program':
+                    value += ' ' + programVersion
                 self._params[param.name] = param.value
         return self._params
 
