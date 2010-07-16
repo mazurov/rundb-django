@@ -288,16 +288,12 @@ class Rundbruns(models.Model):
     @property
     def params(self):
         if not self._params:
-            programVersion = ''
             for param in self.rundbrunparams_set.all():
-                value = param.value
-                if param.name == 'programVersion':
-                    programVersion = value
-                    continue
-                
-                if param.name == 'program':
-                    value += ' ' + programVersion
-                self._params[param.name] = value
+                self._params[param.name] = param.value
+            #Special case for program version
+            if self._params.has_key('programVersion') && self._params.has_key('program'):
+                self._params['program'] += ' ' + self._params['programVersion']
+                del self._params['programVersion']
         return self._params
 
     class Meta:
